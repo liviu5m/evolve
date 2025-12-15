@@ -8,6 +8,10 @@ import Signup from "./components/pages/Signup";
 import Verify from "./components/pages/Verify";
 import Dashboard from "./components/pages/Dashboard";
 import NonAuthRequiredRoute from "./components/middlewares/NonAuthRequiredRoute";
+import Grocery from "./components/pages/Grocery";
+import Progress from "./components/pages/Progress";
+import Planner from "./components/pages/Planner";
+import Profile from "./components/pages/Profile";
 
 function App() {
   const queryClient = new QueryClient();
@@ -23,6 +27,10 @@ function App() {
                   <AuthRequiredRoute>
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
+                      <Route path="/planner" element={<Planner />} />
+                      <Route path="/progress" element={<Progress />} />
+                      <Route path="/grocery" element={<Grocery />} />
+                      <Route path="/profile" element={<Profile />} />
                     </Routes>
                   </AuthRequiredRoute>
                 }

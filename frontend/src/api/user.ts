@@ -39,3 +39,14 @@ export async function getUser() {
   });
   return response.data;
 }
+
+export async function logoutUser() {
+  const response = await axios.post(
+    `${baseUrl}/auth/logout`,
+    {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}

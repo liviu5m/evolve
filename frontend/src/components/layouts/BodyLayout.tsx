@@ -1,0 +1,22 @@
+import React from "react";
+import type { ReactNode } from "react";
+import Sidebar from "../elements/Sidebar";
+import Header from "../elements/Header";
+
+type LayoutProps = {
+  children: ReactNode;
+};
+
+const BodyLayout: React.FC<LayoutProps> = ({ children }) => {
+  return (
+    <div className="flex justify text-[#121212] bg-white">
+      <Sidebar />
+      <div className="w-full">
+        <Header />
+        {children}
+      </div>
+    </div>
+  );
+};
+
+export default BodyLayout;

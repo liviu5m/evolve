@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { LoginData, SignupData } from "../lib/Types";
+import type { LoginData, SignupData, UserUpdateData } from "../lib/Types";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -44,6 +44,20 @@ export async function logoutUser() {
   const response = await axios.post(
     `${baseUrl}/auth/logout`,
     {},
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}
+
+export async function updateUserData(
+  userUpdateData: UserUpdateData,
+  userId: number
+) {
+  const response = await axios.put(
+    `${baseUrl}/api/user/${userId}`,
+    userUpdateData,
     {
       withCredentials: true,
     }

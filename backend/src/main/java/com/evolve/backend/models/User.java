@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
@@ -36,6 +37,15 @@ public class User implements UserDetails {
     private LocalDateTime verificationCodeExpiresAt;
     private Boolean enabled;
     private String provider = "credentials";
+
+    private LocalDate birthDate;
+    private String goal;
+    private Double height;
+    private Double weight;
+    @Column(length = 1000)
+    private String activityLevel;
+    @Column(length = 1000)
+    private String dailyRestrictions;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

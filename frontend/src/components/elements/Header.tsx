@@ -11,14 +11,17 @@ import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "@/api/user";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useAppContext } from "@/lib/AppProvider";
 
 const Header = () => {
+  const { setUser } = useAppContext();
   const navigate = useNavigate();
   const { mutate: logout } = useMutation({
     mutationKey: ["logout-user"],
     mutationFn: () => logoutUser(),
     onSuccess: (data) => {
       console.log(data);
+
       window.location.replace("/auth/login");
       toast.success("Successfully logged out!");
     },
@@ -47,13 +50,16 @@ const Header = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <Link to={"/profile"}>Profile</Link>
-            </DropdownMenuItem>
+            <Link to={"/profile"}>
+              <DropdownMenuItem className="cursor-pointer">
+                Profile
+              </DropdownMenuItem>
+            </Link>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => {
                 logout();
+                setUser(null);
               }}
             >
               Log Out

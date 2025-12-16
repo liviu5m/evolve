@@ -27,13 +27,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     queryFn: () => getUser(),
   });
 
-  console.log(user);
-  
   useEffect(() => {
     if (typeof data === "object") setUser(data);
   }, [data]);
 
-  return isPending ? (
+  return isPending || (data != "Something went wrong." && !user) ? (
     <Loader />
   ) : (
     <AppContext.Provider

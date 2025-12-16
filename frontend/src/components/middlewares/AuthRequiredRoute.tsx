@@ -10,7 +10,7 @@ interface AuthRequiredRouteProps {
 const AuthRequiredRoute: React.FC<AuthRequiredRouteProps> = ({ children }) => {
   const { user } = useAppContext();
   const location = useLocation();
-
+  
   if (!user) {
     return (
       <Navigate

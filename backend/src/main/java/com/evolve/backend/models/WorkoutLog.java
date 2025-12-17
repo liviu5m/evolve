@@ -1,0 +1,58 @@
+package com.evolve.backend.models;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
+
+@Entity
+@Getter
+@Setter
+public class WorkoutLog {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "workout_id",nullable = false)
+    private Workout workout;
+
+    @Column(nullable = false)
+    private String exerciseName;
+
+    @Column(nullable = false)
+    private String muscleGroup;
+
+    @Column(nullable = false)
+    private String sets;
+
+    @Column(nullable = false)
+    private String reps;
+
+    @Column(nullable = false)
+    private String restTime;
+
+    @CreationTimestamp
+    @Column(updatable = false, name = "created_at")
+    private Date createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    public WorkoutLog(Workout workout, String exerciseName, String muscleGroup, String sets, String reps, String restTime) {
+        this.workout = workout;
+        this.exerciseName = exerciseName;
+        this.muscleGroup = muscleGroup;
+        this.sets = sets;
+        this.reps = reps;
+        this.restTime = restTime;
+    }
+
+    public WorkoutLog() {
+    }
+}

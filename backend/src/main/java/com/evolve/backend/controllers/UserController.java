@@ -11,13 +11,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
+    private final GrokService grokService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, GrokService grokService) {
         this.userService = userService;
+        this.grokService = grokService;
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.updateUser(id, userDto));
+    }
+
+    @PutMapping("/plan/{id}")
+    public ResponseEntity<?> generateUserPlan(@PathVariable Long id, @RequestBody UserDto userDto) {
+        return ResponseEntity.ok(grokService.generateWorkoutUserPlan(userDto));
     }
 }

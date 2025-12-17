@@ -12,6 +12,7 @@ import Grocery from "./components/pages/Grocery";
 import Progress from "./components/pages/Progress";
 import Planner from "./components/pages/Planner";
 import Profile from "./components/pages/Profile";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ function App() {
             </Routes>
           </BrowserRouter>
         </AppProvider>
+        <ToastContainer />
       </QueryClientProvider>
     </div>
   );

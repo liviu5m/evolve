@@ -1,6 +1,7 @@
 package com.evolve.backend.services;
 
 
+import com.evolve.backend.dtos.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +33,32 @@ public class GrokService {
         this.restClient = restClient;
     }
 
-    public String test() {
-        String prompt = "Describe the world economy";
+    public String generateWorkoutUserPlan(UserDto userDto) {
+        String prompt = String.format(
+                "Act as a professional fitness coach. Generate a full 7-day weekly workout schedule (Monday to Sunday) in JSON format.\n" +
+                        "User Profile: Goal: %s, Activity Level: %s, Restrictions: %s.\n\n" +
+                        "Instructions:\n" +
+                        "1. For each day of the week, provide a sessionLabel (e.g., 'Monday: Chest & Triceps' or 'Tuesday: Rest Day').\n" +
+                        "2. If it is a Rest Day, leave the exercises array empty.\n" +
+                        "3. Do NOT include 'weight' in the exercises.\n" +
+                        "4. Return ONLY valid JSON.\n\n" +
+                        "JSON Structure:\n" +
+                        "{\n" +
+                        "  \"weekPlan\": [\n" +
+                        "    {\n" +
+                        "      \"day\": \"Monday\",\n" +
+                        "      \"sessionLabel\": \"Upper Body Strength\",\n" +
+                        "      \"totalTime\": 60,\n" +
+                        "      \"exercises\": [\n" +
+                        "        { \"exerciseName\": \"Pushups\", \"muscleGroup\": \"Chest\", \"sets\": \"3\", \"reps\": \"15\", \"restTime\": \"60s\" }\n" +
+                        "      ]\n" +
+                        "    },\n" +
+                        "    { \"day\": \"Tuesday\", \"sessionLabel\": \"Rest Day\", \"totalTime\": 0, \"exercises\": [] }\n" +
+                        "  ]\n" +
+                        "}",
+                userDto.getGoal(), userDto.getActivityLevel(), userDto.getDailyRestrictions()
+        );
+
         return getGrokResponse(prompt);
     }
 

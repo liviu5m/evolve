@@ -18,6 +18,10 @@ public class UserService {
         return userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    public User findUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     public User updateUser(Long id, UserDto userDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         user.setFullName(userDto.getFullName());
@@ -27,6 +31,8 @@ public class UserService {
         user.setWeight(userDto.getWeight());
         user.setActivityLevel(userDto.getActivityLevel());
         user.setDailyRestrictions(userDto.getDailyRestrictions());
+        user.setGym(userDto.getGym());
+        user.setCalisthenics(userDto.getCalisthenics());
         return userRepository.save(user);
     }
 }

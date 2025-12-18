@@ -10,7 +10,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="bg-[#0F172A] h-screen px-10 py-5 w-[300px]">
+    <div className="bg-[#0F172A] h-screen px-10 py-5 w-[300px] fixed">
       <Link className="flex items-center gap-5" to={"/"}>
         <h2 className="w-10 h-10 rounded-lg font-bold text-xl bg-[#FF6B6B] text-white flex items-center justify-center">
           E

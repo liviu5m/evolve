@@ -15,4 +15,6 @@ public class UserDto {
     private Double weight;
     private String activityLevel;
     private String dailyRestrictions;
+    private Boolean gym;
+    private Boolean calisthenics;
 }

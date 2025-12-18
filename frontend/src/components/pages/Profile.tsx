@@ -26,6 +26,8 @@ const Profile = () => {
     weight: String(user?.weight) || undefined,
     activityLevel: user?.activityLevel || "",
     dailyRestrictions: user?.dailyRestrictions || "",
+    gym: user?.gym || false,
+    calisthenics: user?.calisthenics || false,
   });
 
   const handleDateSelect = (newDate: Date | undefined) => {
@@ -146,6 +148,29 @@ const Profile = () => {
                 setData({ ...data, dailyRestrictions: e.target.value })
               }
             ></textarea>
+          </div>
+          <div className="gap-6 mb-4 flex items-center gap-5">
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                checked={data.calisthenics || false}
+                onChange={(e) =>
+                  setData({ ...data, calisthenics: e.target.checked })
+                }
+              />
+              <span className="text-gray-700 font-medium">Calisthenics</span>
+            </label>
+
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                checked={data.gym || false}
+                onChange={(e) => setData({ ...data, gym: e.target.checked })}
+              />
+              <span className="text-gray-700 font-medium">Gym</span>
+            </label>
           </div>
           <button className="text-white bg-[#FF6B6B] rounded-lg text-sm font-semibold w-full py-3 mt-2 cursor-pointer hover:scale-105 hover:bg-[#fc5d5d] mb-5">
             Save

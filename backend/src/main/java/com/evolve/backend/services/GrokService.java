@@ -34,14 +34,19 @@ public class GrokService {
     }
 
     public String generateWorkoutUserPlan(UserDto userDto) {
+        String equipmentAccess = String.format("Gym Access: %b, Calisthenics Equipment: %b",
+                userDto.getGym(), userDto.getCalisthenics());
+
         String prompt = String.format(
-                "Act as a professional fitness coach. Generate a full 7-day weekly workout schedule (Monday to Sunday) in JSON format.\n" +
-                        "User Profile: Goal: %s, Activity Level: %s, Restrictions: %s.\n\n" +
+                "Act as a professional fitness coach. Generate a full 7-day weekly workout schedule (Monday to Sunday) in JSON format. " +
+                        "(Generate so the workout vary from 1-2 hours and between 6-8 exercices per day)\n" +
+                        "User Profile: Goal: %s, Activity Level: %s, Restrictions: %s, Equipment: %s.\n\n" + // Added Equipment
                         "Instructions:\n" +
-                        "1. For each day of the week, provide a sessionLabel (e.g., 'Monday: Chest & Triceps' or 'Tuesday: Rest Day').\n" +
-                        "2. If it is a Rest Day, leave the exercises array empty.\n" +
-                        "3. Do NOT include 'weight' in the exercises.\n" +
-                        "4. Return ONLY valid JSON.\n\n" +
+                        "1. Tailor exercises based on equipment: If Gym is true, include machines/barbells. If Calisthenics is true, include bodyweight/bar movements.\n" +
+                        "2. For each day of the week, provide a sessionLabel (e.g., 'Monday: Chest & Triceps' or 'Tuesday: Rest Day').\n" +
+                        "3. If it is a Rest Day, leave the exercises array empty.\n" +
+                        "4. Do NOT include 'weight' in the exercises.\n" +
+                        "5. Return ONLY valid JSON.\n\n" +
                         "JSON Structure:\n" +
                         "{\n" +
                         "  \"weekPlan\": [\n" +
@@ -56,7 +61,48 @@ public class GrokService {
                         "    { \"day\": \"Tuesday\", \"sessionLabel\": \"Rest Day\", \"totalTime\": 0, \"exercises\": [] }\n" +
                         "  ]\n" +
                         "}",
-                userDto.getGoal(), userDto.getActivityLevel(), userDto.getDailyRestrictions()
+                userDto.getGoal(),
+                userDto.getActivityLevel(),
+                userDto.getDailyRestrictions(),
+                equipmentAccess
+        );
+
+        return getGrokResponse(prompt);
+    }
+    public String generateMealUserPlan(UserDto userDto) {
+        String dietaryInfo = String.format("Dietary Goal: %s, Activity Level: %s, Restrictions: %s",
+                userDto.getGoal(), userDto.getActivityLevel(), userDto.getDailyRestrictions());
+
+        String prompt = String.format(
+                "Act as a professional nutritionist. Generate a full 7-day weekly meal plan (Monday to Sunday) in JSON format.\n" +
+                        "User Profile: %s.\n\n" +
+                        "Instructions:\n" +
+                        "1. Provide exactly 4 meals per day: Breakfast, Lunch, Dinner, and a Snack.\n" +
+                        "2. For each meal, include: name, calories, protein, carbs, fats, and mealType.\n" +
+                        "3. 'mealType' must be exactly one of: BREAKFAST, LUNCH, DINNER, SNACK.\n" +
+                        "4. 'mealTime' MUST be a string in 24-hour format 'HH:mm' (e.g., '08:30', '13:00'). Do not include seconds.\n" +
+                        "5. Nutritional values should be numbers (Double).\n" +
+                        "6. Return ONLY valid JSON without markdown formatting.\n\n" +
+                        "JSON Structure:\n" +
+                        "{\n" +
+                        "  \"weekMealPlan\": [\n" +
+                        "    {\n" +
+                        "      \"day\": \"Monday\",\n" +
+                        "      \"meals\": [\n" +
+                        "        {\n" +
+                        "          \"name\": \"Example Meal\",\n" +
+                        "          \"mealTime\": \"08:30\",\n" +
+                        "          \"calories\": 350.0,\n" +
+                        "          \"protein\": 15.0,\n" +
+                        "          \"carbs\": 50.0,\n" +
+                        "          \"fats\": 8.0,\n" +
+                        "          \"mealType\": \"BREAKFAST\"\n" +
+                        "        }\n" +
+                        "      ]\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}",
+                dietaryInfo
         );
 
         return getGrokResponse(prompt);
@@ -86,7 +132,6 @@ public class GrokService {
                             })
                     .toEntity(Map.class)
                     .getBody();
-            System.out.println(response);
             if (response == null) {
                 logger.error("Received null response from Grok API");
                 return "Error: Null response from API";

@@ -27,6 +27,9 @@ public class Workout {
     @Column(nullable = false)
     private Integer totalTime;
 
+    @Column(nullable = false)
+    private String day;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;
@@ -35,10 +38,11 @@ public class Workout {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    public Workout(User user, String sessionLabel, Integer totalTime) {
+    public Workout(User user, String sessionLabel, Integer totalTime, String day) {
         this.user = user;
         this.sessionLabel = sessionLabel;
         this.totalTime = totalTime;
+        this.day = day;
     }
 
     public Workout() {

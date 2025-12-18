@@ -8,6 +8,8 @@ export type User = {
   weight: number;
   activityLevel: string;
   dailyRestrictions: string;
+  gym: boolean;
+  calisthenics: boolean;
 };
 
 export type SignupData = {
@@ -30,4 +32,6 @@ export type UserUpdateData = {
   weight: undefined | string;
   activityLevel: string;
   dailyRestrictions: string;
+  calisthenics: boolean;
+  gym: boolean;
 };

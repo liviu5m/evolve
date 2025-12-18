@@ -60,6 +60,14 @@ const Dashboard = () => {
               </Card>
             </div>
           </div>
+          <div className="flex items-center justify-center">
+            <button
+              className="bg-blue-400 text-white text-xl font-semibold px-10 py-5 rounded-lg cursor-pointer hover:scale-105 shadow"
+              onClick={() => generatePlan()}
+            >
+              Generate My Custom Plan
+            </button>
+          </div>
           {!workout ? (
             <div className="flex items-center justify-center">
               <button

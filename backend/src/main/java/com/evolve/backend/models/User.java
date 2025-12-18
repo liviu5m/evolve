@@ -46,6 +46,8 @@ public class User implements UserDetails {
     private String activityLevel;
     @Column(length = 1000)
     private String dailyRestrictions;
+    private Boolean gym = false;
+    private Boolean calisthenics = false;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")

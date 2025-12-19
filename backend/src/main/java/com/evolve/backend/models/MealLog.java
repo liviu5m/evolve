@@ -1,6 +1,7 @@
 package com.evolve.backend.models;
 
 import com.evolve.backend.enums.MealType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +24,9 @@ public class MealLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "meal_plan_id", nullable = false)
+    @JoinColumn(name = "meal_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Meal meal;
 
     @Column(nullable = false)

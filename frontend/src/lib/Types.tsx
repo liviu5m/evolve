@@ -35,3 +35,30 @@ export type UserUpdateData = {
   calisthenics: boolean;
   gym: boolean;
 };
+
+export type Workout = {
+  id: number;
+  user: User;
+  sessionLabel: string;
+  totalTime: number;
+  day: string;
+  createdAt: string;
+}
+
+export type WorkoutLog = {
+  id: number;
+  workout: Workout;
+  exerciseName: string;
+  muscleGroup: string;
+  sets: string;
+  reps: string;
+  restTime: string;
+  createdAt: string;
+}
+
+export type Meal = {
+  id: number;
+  user: User;
+  day: string;
+  createdAt: string;
+}

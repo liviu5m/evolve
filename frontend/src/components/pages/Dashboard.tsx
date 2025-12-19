@@ -4,7 +4,7 @@ import { Card } from "../elements/Card";
 import { ProgressBar } from "../elements/ProgressBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { generateFitnessPlan, getWorkoutByUser } from "@/api/workout";
+import { generateFitnessPlan, getWorkoutsByUser } from "@/api/workout";
 import { useAppContext } from "@/lib/AppProvider";
 import { toast, ToastContainer } from "react-toastify";
 
@@ -12,7 +12,7 @@ const Dashboard = () => {
   const { user } = useAppContext();
   const { data: workout } = useQuery({
     queryKey: ["workout-user"],
-    queryFn: () => getWorkoutByUser(user?.id || -1),
+    queryFn: () => getWorkoutsByUser(user?.id || -1),
   });
   const navigate = useNavigate();
 
@@ -60,15 +60,7 @@ const Dashboard = () => {
               </Card>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-            <button
-              className="bg-blue-400 text-white text-xl font-semibold px-10 py-5 rounded-lg cursor-pointer hover:scale-105 shadow"
-              onClick={() => generatePlan()}
-            >
-              Generate My Custom Plan
-            </button>
-          </div>
-          {!workout ? (
+          {1 ? (
             <div className="flex items-center justify-center">
               <button
                 className="bg-blue-400 text-white text-xl font-semibold px-10 py-5 rounded-lg cursor-pointer hover:scale-105 shadow"

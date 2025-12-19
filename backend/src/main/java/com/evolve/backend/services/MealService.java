@@ -9,6 +9,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.stylesheets.LinkStyle;
+
+import java.util.List;
 
 @Service
 public class MealService {
@@ -19,6 +22,11 @@ public class MealService {
     public MealService(MealRepository mealRepository, MealLogService mealLogService) {
         this.mealRepository = mealRepository;
         this.mealLogService = mealLogService;
+    }
+
+    public List<Meal> getMealsByUserId(Long userId) {
+        List<Meal> meals = mealRepository.findByUserAndDayWithLogs(userId);
+        return meals;
     }
 
     public void generateMealPlan(User user, String response) throws JsonProcessingException {

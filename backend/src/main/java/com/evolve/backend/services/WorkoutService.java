@@ -26,9 +26,9 @@ public class WorkoutService {
         this.workoutLogService = workoutLogService;
     }
 
-    public Workout getWorkoutByUserId(Long userId) {
-        Workout workout = workoutRepository.findByUserId(userId).orElse(null);
-        return workout;
+    public List<Workout> getWorkoutByUserId(Long userId) {
+        List<Workout> workouts = workoutRepository.findAllByUserIdWithLogs(userId);
+        return workouts;
     }
 
     public void generateWorkoutPlan(User user, String response) throws JsonProcessingException {

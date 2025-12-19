@@ -14,7 +14,9 @@ const BodyLayout: React.FC<LayoutProps> = ({ children }) => {
       <div className="w-[300px] flex-shrink-0" aria-hidden="true"></div>
       <div className="w-full flex-1 min-w-0">
         <Header />
-        {children}
+        <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full">
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 package com.evolve.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class WorkoutLog {
     @ManyToOne
     @JoinColumn(name = "workout_id",nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private Workout workout;
 
     @Column(nullable = false)

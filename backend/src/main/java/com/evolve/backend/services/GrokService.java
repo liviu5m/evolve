@@ -36,16 +36,20 @@ public class GrokService {
     public String generateWorkoutUserPlan(UserDto userDto) {
         String equipmentAccess = String.format("Gym Access: %b, Calisthenics Equipment: %b",
                 userDto.getGym(), userDto.getCalisthenics());
+        int age = 25;
+        if (userDto.getBirthDate() != null) {
+            age = java.time.Period.between(userDto.getBirthDate(), java.time.LocalDate.now()).getYears();
+        }
 
         String prompt = String.format(
                 "Act as a professional fitness coach. Generate a full 7-day weekly workout schedule (Monday to Sunday) in JSON format. " +
                         "(Generate so the workout vary from 1-2 hours and between 6-8 exercices per day)\n" +
-                        "User Profile: Goal: %s, Activity Level: %s, Restrictions: %s, Equipment: %s.\n\n" + // Added Equipment
+                        "User Profile: Goal: %s, Activity Level: %s, Restrictions: %s, Equipment: %s, Age: %d, Height: %f, Weight: %f.\n\n, " +
                         "Instructions:\n" +
                         "1. Tailor exercises based on equipment: If Gym is true, include machines/barbells. If Calisthenics is true, include bodyweight/bar movements.\n" +
                         "2. For each day of the week, provide a sessionLabel (e.g., 'Monday: Chest & Triceps' or 'Tuesday: Rest Day').\n" +
                         "3. If it is a Rest Day, leave the exercises array empty.\n" +
-                        "4. Do NOT include 'weight' in the exercises.\n" +
+                        "4. Include everything as such from the example below.\n" +
                         "5. Return ONLY valid JSON.\n\n" +
                         "JSON Structure:\n" +
                         "{\n" +
@@ -64,25 +68,36 @@ public class GrokService {
                 userDto.getGoal(),
                 userDto.getActivityLevel(),
                 userDto.getDailyRestrictions(),
-                equipmentAccess
+                equipmentAccess,
+                age,
+                userDto.getHeight(),
+                userDto.getWeight()
         );
+
+        System.out.println(prompt);
 
         return getGrokResponse(prompt);
     }
     public String generateMealUserPlan(UserDto userDto) {
-        String dietaryInfo = String.format("Dietary Goal: %s, Activity Level: %s, Restrictions: %s",
+        String dietaryInfo = String.format("Goal: %s, Activity Level: %s, Restrictions: %s",
                 userDto.getGoal(), userDto.getActivityLevel(), userDto.getDailyRestrictions());
+
+        int age = 25;
+        if (userDto.getBirthDate() != null) {
+            age = java.time.Period.between(userDto.getBirthDate(), java.time.LocalDate.now()).getYears();
+        }
 
         String prompt = String.format(
                 "Act as a professional nutritionist. Generate a full 7-day weekly meal plan (Monday to Sunday) in JSON format.\n" +
-                        "User Profile: %s.\n\n" +
+                        "User Profile: %s, Age: %d, Height: $f, Weight: %f.\n\n" +
                         "Instructions:\n" +
                         "1. Provide exactly 4 meals per day: Breakfast, Lunch, Dinner, and a Snack.\n" +
                         "2. For each meal, include: name, calories, protein, carbs, fats, and mealType.\n" +
                         "3. 'mealType' must be exactly one of: BREAKFAST, LUNCH, DINNER, SNACK.\n" +
                         "4. 'mealTime' MUST be a string in 24-hour format 'HH:mm' (e.g., '08:30', '13:00'). Do not include seconds.\n" +
                         "5. Nutritional values should be numbers (Double).\n" +
-                        "6. Return ONLY valid JSON without markdown formatting.\n\n" +
+                        "6. Consider that very meal calories sum should be according to the goal weight and height.\n" +
+                        "7. Return ONLY valid JSON without markdown formatting.\n\n" +
                         "JSON Structure:\n" +
                         "{\n" +
                         "  \"weekMealPlan\": [\n" +
@@ -102,7 +117,10 @@ public class GrokService {
                         "    }\n" +
                         "  ]\n" +
                         "}",
-                dietaryInfo
+                dietaryInfo,
+                age,
+                userDto.getHeight(),
+                userDto.getWeight()
         );
 
         return getGrokResponse(prompt);

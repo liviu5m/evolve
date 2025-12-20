@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { LoginData, SignupData, UserUpdateData } from "../lib/Types";
+import type { LoginData, SignupData, User, UserUpdateData } from "../lib/Types";
 
 const baseUrl = import.meta.env.VITE_API_URL;
 
@@ -58,6 +58,19 @@ export async function updateUserData(
   const response = await axios.put(
     `${baseUrl}/api/user/${userId}`,
     userUpdateData,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}
+
+export async function generateFitnessPlan(user: User | null) {
+  const response = await axios.put(
+    `${baseUrl}/api/user/plan/${user?.id}`,
+    {
+      userDto: user,
+    },
     {
       withCredentials: true,
     }

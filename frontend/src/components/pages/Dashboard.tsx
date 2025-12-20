@@ -4,9 +4,10 @@ import { Card } from "../elements/Card";
 import { ProgressBar } from "../elements/ProgressBar";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { generateFitnessPlan, getWorkoutsByUser } from "@/api/workout";
+import { getWorkoutsByUser } from "@/api/workout";
 import { useAppContext } from "@/lib/AppProvider";
 import { toast, ToastContainer } from "react-toastify";
+import { generateFitnessPlan } from "@/api/user";
 
 const Dashboard = () => {
   const { user } = useAppContext();

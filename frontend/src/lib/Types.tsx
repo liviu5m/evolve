@@ -43,6 +43,7 @@ export type Workout = {
   totalTime: number;
   day: string;
   createdAt: string;
+  logs: WorkoutLog[];
 }
 
 export type WorkoutLog = {
@@ -60,5 +61,27 @@ export type Meal = {
   id: number;
   user: User;
   day: string;
+  meals: MealLog[];
   createdAt: string;
+}
+
+export type MealLog = {
+  id: number;
+  mealTime: string;
+  name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  mealType: string;
+  createdAt: string;
+}
+
+export type ProgressData = {
+  workout?: boolean;
+  breakfast?: boolean;
+  lunch?: boolean;
+  dinner?: boolean;
+  snack?: boolean;
+  weight?: number;
 }

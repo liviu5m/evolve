@@ -11,15 +11,3 @@ export async function getWorkoutsByUser(userId: number) {
   return response.data;
 }
 
-export async function generateFitnessPlan(user: User | null) {
-  const response = await axios.put(
-    `${baseUrl}/api/user/plan/${user?.id}`,
-    {
-      user,
-    },
-    {
-      withCredentials: true,
-    }
-  );
-  return response.data;
-}

@@ -9,7 +9,7 @@ type LayoutProps = {
 
 const BodyLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex text-[#121212] bg-white">
+    <div className="flex text-[#121212] bg-[#F9FAFB] min-h-screen">
       <Sidebar />
       <div className="w-[300px] flex-shrink-0" aria-hidden="true"></div>
       <div className="w-full flex-1 min-w-0">

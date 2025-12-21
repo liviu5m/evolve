@@ -71,4 +71,21 @@ public class MealLog {
 
     public MealLog() {
     }
+
+    @Override
+    public String toString() {
+        return "MealLog{" +
+                "id=" + id +
+                ", meal=" + meal +
+                ", mealTime=" + mealTime +
+                ", name='" + name + '\'' +
+                ", calories=" + calories +
+                ", protein=" + protein +
+                ", carbs=" + carbs +
+                ", fats=" + fats +
+                ", mealType=" + mealType +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

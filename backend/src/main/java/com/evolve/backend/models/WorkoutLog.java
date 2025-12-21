@@ -26,19 +26,14 @@ public class WorkoutLog {
     @JsonBackReference
     private Workout workout;
 
-    @Column(nullable = false)
     private String exerciseName;
 
-    @Column(nullable = false)
     private String muscleGroup;
 
-    @Column(nullable = false)
     private String sets;
 
-    @Column(nullable = false)
     private String reps;
 
-    @Column(nullable = false)
     private String restTime;
 
     @CreationTimestamp

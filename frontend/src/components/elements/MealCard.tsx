@@ -8,17 +8,14 @@ export function MealCard({
   meal,
   updateProgress,
   currentProgress,
-  calories,
-  setCalories,
+  regenerateMeal,
 }: {
   meal: MealLog;
   updateProgress: (e: ProgressData) => void;
   currentProgress: ProgressData;
-  calories: number;
-  setCalories: (e: number) => void;
+  regenerateMeal: (e: string) => void;
 }) {
   const mealKey = meal.mealType.toLowerCase() as keyof ProgressData;
-
   return (
     <Card className={`transition-all ${0 ? "opacity-75 bg-gray-50" : ""}`}>
       <div className="flex gap-4">
@@ -51,9 +48,6 @@ export function MealCard({
             </div>
             <button
               onClick={() => {
-                if (!currentProgress[mealKey])
-                  setCalories(calories + meal.calories);
-                else setCalories(calories - meal.calories);
                 updateProgress({
                   ...currentProgress,
                   [mealKey]: !currentProgress[mealKey],
@@ -81,8 +75,11 @@ export function MealCard({
             <button className="text-xs font-medium text-gray-500 hover:text-[#0F172A] flex items-center gap-1">
               View Recipe
             </button>
-            <button className="text-xs font-medium text-gray-500 hover:text-[#FF6B6B] flex items-center gap-1 ml-auto">
-              <RefreshCw className="w-3 h-3" /> Swap
+            <button
+              className="text-xs font-medium text-gray-500 hover:text-[#FF6B6B] flex items-center gap-1 ml-auto"
+              onClick={() => regenerateMeal(mealKey)}
+            >
+              <RefreshCw className="w-3 h-3" /> Regenerate
             </button>
           </div>
         </div>

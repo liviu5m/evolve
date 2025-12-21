@@ -2,7 +2,7 @@ export type User = {
   id: number;
   fullName: string;
   email: string;
-  birthDate: Date;
+  birthDate: string;
   goal: string;
   height: number;
   weight: number;
@@ -26,7 +26,7 @@ export type LoginData = {
 
 export type UserUpdateData = {
   fullName: string;
-  birthDate: Date | undefined;
+  birthDate: string;
   goal: string;
   height: undefined | string;
   weight: undefined | string;
@@ -44,7 +44,7 @@ export type Workout = {
   day: string;
   createdAt: string;
   logs: WorkoutLog[];
-}
+};
 
 export type WorkoutLog = {
   id: number;
@@ -55,7 +55,7 @@ export type WorkoutLog = {
   reps: string;
   restTime: string;
   createdAt: string;
-}
+};
 
 export type Meal = {
   id: number;
@@ -63,7 +63,7 @@ export type Meal = {
   day: string;
   meals: MealLog[];
   createdAt: string;
-}
+};
 
 export type MealLog = {
   id: number;
@@ -75,7 +75,7 @@ export type MealLog = {
   fats: number;
   mealType: string;
   createdAt: string;
-}
+};
 
 export type ProgressData = {
   workout?: boolean;
@@ -84,4 +84,4 @@ export type ProgressData = {
   dinner?: boolean;
   snack?: boolean;
   weight?: number;
-}
+};

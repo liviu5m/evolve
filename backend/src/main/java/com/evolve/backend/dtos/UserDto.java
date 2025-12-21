@@ -17,4 +17,19 @@ public class UserDto {
     private String dailyRestrictions;
     private Boolean gym;
     private Boolean calisthenics;
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "fullName='" + fullName + '\'' +
+                ", birthDate=" + birthDate +
+                ", goal='" + goal + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", activityLevel='" + activityLevel + '\'' +
+                ", dailyRestrictions='" + dailyRestrictions + '\'' +
+                ", gym=" + gym +
+                ", calisthenics=" + calisthenics +
+                '}';
+    }
 }

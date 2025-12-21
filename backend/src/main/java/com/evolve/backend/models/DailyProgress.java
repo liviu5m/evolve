@@ -23,11 +23,11 @@ public class DailyProgress {
     private User user;
 
     private LocalDate date;
-    private Boolean workout;
-    private Boolean breakfast;
-    private Boolean dinner;
-    private Boolean lunch;
-    private Boolean snack;
+    private Boolean workout = false;
+    private Boolean breakfast = false;
+    private Boolean dinner = false;
+    private Boolean lunch = false;
+    private Boolean snack = false;
     private Double weight;
 
     @CreationTimestamp
@@ -52,5 +52,20 @@ public class DailyProgress {
     public DailyProgress() {
     }
 
-
+    @Override
+    public String toString() {
+        return "DailyProgress{" +
+                "id=" + id +
+                ", user=" + user +
+                ", date=" + date +
+                ", workout=" + workout +
+                ", breakfast=" + breakfast +
+                ", dinner=" + dinner +
+                ", lunch=" + lunch +
+                ", snack=" + snack +
+                ", weight=" + weight +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }

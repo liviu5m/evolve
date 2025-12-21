@@ -10,7 +10,7 @@ export async function updateProgressData(
 ) {
   const response = await axios.put(
     `${baseUrl}/api/progress`,
-    { ...data, userId, date: date.toISOString().split("T")[0]},
+    { ...data, userId, date: date.toISOString().split("T")[0] },
     { withCredentials: true }
   );
   return response.data;
@@ -21,6 +21,26 @@ export async function getCurrentProgress(userId: number, date: Date) {
     params: {
       userId,
       date: date.toISOString().split("T")[0],
+    },
+    withCredentials: true,
+  });
+  return response.data;
+}
+
+export async function getWorkoutsDoneByUserId(userId: number) {
+  const response = await axios.get(`${baseUrl}/api/progress/workout`, {
+    params: {
+      userId,
+    },
+    withCredentials: true,
+  });
+  return response.data;
+}
+
+export async function getCurrentStreak(userId: number) {
+  const response = await axios.get(`${baseUrl}/api/progress/streak`, {
+    params: {
+      userId,
     },
     withCredentials: true,
   });

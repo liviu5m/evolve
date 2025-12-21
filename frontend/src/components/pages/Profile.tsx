@@ -20,7 +20,7 @@ const Profile = () => {
   const { user, setUser } = useAppContext();
   const [data, setData] = useState<UserUpdateData>({
     fullName: user?.fullName || "",
-    birthDate: user?.birthDate || undefined,
+    birthDate: user?.birthDate || "",
     goal: user?.goal || "",
     height: String(user?.height) || undefined,
     weight: String(user?.weight) || undefined,
@@ -29,13 +29,6 @@ const Profile = () => {
     gym: user?.gym || false,
     calisthenics: user?.calisthenics || false,
   });
-
-  const handleDateSelect = (newDate: Date | undefined) => {
-    setData((prevData) => ({
-      ...prevData,
-      birthDate: newDate || undefined,
-    }));
-  };
 
   const { mutate: updateUser } = useMutation({
     mutationKey: ["update-user-data"],
@@ -73,29 +66,14 @@ const Profile = () => {
             />
           </div>
           <div className="relative">
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  data-empty={!data.birthDate}
-                  className="px-5 py-5 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px] flex justify-start"
-                >
-                  <CalendarIcon />
-                  {data.birthDate ? (
-                    format(data.birthDate, "PPP")
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={data.birthDate}
-                  onSelect={handleDateSelect}
-                />
-              </PopoverContent>
-            </Popover>
+            <User className="absolute top-1/2 -translate-y-1/2 left-2" />
+            <input
+              type="date"
+              className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+              placeholder="Full Name"
+              value={data.birthDate}
+              onChange={(e) => setData({ ...data, birthDate: e.target.value })}
+            />
           </div>
           <div className="relative">
             <User className="absolute top-1/2 -translate-y-1/2 left-2" />

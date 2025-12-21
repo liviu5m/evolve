@@ -29,4 +29,14 @@ public class DailyProgressController {
         DailyProgress dailyProgress = dailyProgressService.getDailyProgress(userId, date);
         return ResponseEntity.ok(dailyProgress);
     }
+
+    @GetMapping("/workout")
+    public ResponseEntity<?> getWorkoutProgress(@RequestParam Long userId) {
+        return ResponseEntity.ok(dailyProgressService.getWorkoutsDone(userId));
+    }
+
+    @GetMapping("/streak")
+    public ResponseEntity<?> getStreakProgress(@RequestParam Long userId) {
+        return ResponseEntity.ok(dailyProgressService.getStreakProgress(userId));
+    }
 }

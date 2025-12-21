@@ -68,9 +68,7 @@ export async function updateUserData(
 export async function generateFitnessPlan(user: User | null) {
   const response = await axios.put(
     `${baseUrl}/api/user/plan/${user?.id}`,
-    {
-      userDto: user,
-    },
+    user,
     {
       withCredentials: true,
     }

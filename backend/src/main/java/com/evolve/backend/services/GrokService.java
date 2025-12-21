@@ -2,22 +2,19 @@ package com.evolve.backend.services;
 
 
 import com.evolve.backend.dtos.UserDto;
+import com.evolve.backend.models.MealLog;
+import com.evolve.backend.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class GrokService {
@@ -50,7 +47,8 @@ public class GrokService {
                         "2. For each day of the week, provide a sessionLabel (e.g., 'Monday: Chest & Triceps' or 'Tuesday: Rest Day').\n" +
                         "3. If it is a Rest Day, leave the exercises array empty.\n" +
                         "4. Include everything as such from the example below.\n" +
-                        "5. Return ONLY valid JSON.\n\n" +
+                        "5. Every exercise should have reps, sets and restTime even if its running.\n" +
+                        "6. Return ONLY valid JSON.\n\n" +
                         "JSON Structure:\n" +
                         "{\n" +
                         "  \"weekPlan\": [\n" +
@@ -73,8 +71,6 @@ public class GrokService {
                 userDto.getHeight(),
                 userDto.getWeight()
         );
-
-        System.out.println(prompt);
 
         return getGrokResponse(prompt);
     }
@@ -125,6 +121,50 @@ public class GrokService {
 
         return getGrokResponse(prompt);
     }
+
+    public String regenerateSingleMeal(String mealTypeToReplace, List<MealLog> existingMeals, User user) {
+        StringBuilder history = new StringBuilder();
+        for (MealLog m : existingMeals) {
+            history.append(String.format("- %s: %s (%.0f kcal)\n", m.getMealType(), m.getName(), m.getCalories()));
+        }
+        String dietaryInfo = String.format("Goal: %s, Activity Level: %s, Restrictions: %s",
+                user.getGoal(), user.getActivityLevel(), user.getDailyRestrictions());
+
+        int age = 25;
+        if (user.getBirthDate() != null) {
+            age = java.time.Period.between(user.getBirthDate(), java.time.LocalDate.now()).getYears();
+        }
+
+        String prompt = String.format(
+                "Act as a professional nutritionist. The user needs to replace their %s.\n\n" +
+                        "CONTEXT:\n" +
+                        "User Profile: %s, Age: %d, Height: %.2f, Weight: %.2f.\n" +
+                        "Current Daily Progress (Already planned/eaten):\n%s\n\n" +
+                        "INSTRUCTIONS:\n" +
+                        "1. Generate a NEW meal specifically for the type: %s.\n" +
+                        "2. Do NOT repeat any meals listed in the 'Current Daily Progress'.\n" +
+                        "3. Ensure the calories and macros for this new meal help the user stay on track for their daily goals.\n" +
+                        "5. Return ONLY a single valid JSON object. No markdown, no '```json' tags, no preamble.\n\n" +
+                        "REQUIRED JSON STRUCTURE:\n" +
+                        "{\n" +
+                        "  \"name\": \"Meal Name\",\n" +
+                        "  \"mealTime\": \"HH:mm\",\n" +
+                        "  \"calories\": 0.0,\n" +
+                        "  \"protein\": 0.0,\n" +
+                        "  \"carbs\": 0.0,\n" +
+                        "  \"fats\": 0.0,\n" +
+                        "  \"mealType\": \"%s\"\n" +
+                        "}",
+                mealTypeToReplace.toUpperCase(),
+                dietaryInfo, age, user.getHeight(), user.getWeight(),
+                history.toString(),
+                mealTypeToReplace.toUpperCase(),
+                mealTypeToReplace.toUpperCase()
+        );
+
+        return getGrokResponse(prompt);
+    }
+
 
     private String getGrokResponse(String prompt) {
         try {

@@ -1,6 +1,7 @@
 package com.evolve.backend.controllers;
 
 import com.evolve.backend.dtos.ProgressDto;
+import com.evolve.backend.dtos.WeightUpdateDto;
 import com.evolve.backend.models.DailyProgress;
 import com.evolve.backend.services.DailyProgressService;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,15 @@ public class DailyProgressController {
     @GetMapping("/streak")
     public ResponseEntity<?> getStreakProgress(@RequestParam Long userId) {
         return ResponseEntity.ok(dailyProgressService.getStreakProgress(userId));
+    }
+
+    @GetMapping("/weight")
+    public ResponseEntity<?> getWeightProgress(@RequestParam Long userId, @RequestParam String chartType) {
+        return ResponseEntity.ok(dailyProgressService.getWeightProgress(userId, chartType));
+    }
+
+    @PutMapping("/weight")
+    public ResponseEntity<?> setWeightProgress(@RequestBody WeightUpdateDto weightUpdateDto) {
+        return ResponseEntity.ok(dailyProgressService.setWeightProgress(weightUpdateDto));
     }
 }

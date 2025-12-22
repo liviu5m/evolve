@@ -1,4 +1,4 @@
-import { Calendar } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar } from "lucide-react";
 import React, { useMemo } from "react";
 
 interface Props {
@@ -11,7 +11,7 @@ export function WeeklyCalendar({ selectedDate, onSelectDate }: Props) {
 
   const weekDays = useMemo(() => {
     const baseDate = new Date(selectedDate);
-    const dayOfWeek = baseDate.getDay(); // 0 (Sun) to 6 (Sat)
+    const dayOfWeek = baseDate.getDay();
 
     const diff = baseDate.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
 
@@ -59,6 +59,16 @@ export function WeeklyCalendar({ selectedDate, onSelectDate }: Props) {
       </div>
 
       <div className="flex justify-between items-center">
+        <button
+          onClick={() => {
+            const next = new Date(selectedDate);
+            next.setDate(selectedDate.getDate() - 1);
+            onSelectDate(next);
+          }}
+          className="hover:scale-110 hover:text-[#FF6B6B] cursor-pointer"
+        >
+          <ArrowLeft />
+        </button>
         {weekDays.map((date, index) => {
           const isSelected = isSameDay(date, selectedDate);
           const isToday = isSameDay(date, new Date());
@@ -90,6 +100,16 @@ export function WeeklyCalendar({ selectedDate, onSelectDate }: Props) {
             </button>
           );
         })}
+        <button
+          onClick={() => {
+            const prev = new Date(selectedDate);
+            prev.setDate(selectedDate.getDate() + 1);
+            onSelectDate(prev);
+          }}
+          className="hover:scale-110 hover:text-[#FF6B6B] cursor-pointer"
+        >
+          <ArrowRight />
+        </button>
       </div>
     </div>
   );

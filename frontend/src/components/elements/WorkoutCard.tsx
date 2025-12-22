@@ -2,16 +2,21 @@ import React from "react";
 import { Dumbbell, Check, Clock, PlayCircle } from "lucide-react";
 import type { ProgressData, Workout, WorkoutLog } from "@/lib/Types";
 import { Card } from "./Card";
+import { isPast, isSameDay } from "date-fns";
 
 export function WorkoutCard({
   workout,
   updateProgress,
   currentProgress,
+  selectedDate,
 }: {
   workout: Workout;
   updateProgress: (e: ProgressData) => void;
   currentProgress: ProgressData;
+  selectedDate: Date;
 }) {
+  let today = new Date();
+
   return (
     <div
       className={`border-l-4 bg-white rounded-xl shadow-sm border p-10 border-gray-100 overflow-hidden  ${
@@ -33,13 +38,14 @@ export function WorkoutCard({
         </div>
         <button
           onClick={() => {
-            updateProgress({ workout: !currentProgress.workout });
+            if (isSameDay(today, selectedDate))
+              updateProgress({ workout: !currentProgress.workout });
           }}
           className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
             currentProgress.workout
               ? "bg-green-100 text-green-700"
               : "bg-[#0F172A] text-white hover:bg-[#1E293B]"
-          }`}
+          } ${!isSameDay(today, selectedDate) && "opacity-50"}`}
         >
           {currentProgress.workout ? (
             <>

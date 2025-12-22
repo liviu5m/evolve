@@ -46,3 +46,33 @@ export async function getCurrentStreak(userId: number) {
   });
   return response.data;
 }
+
+export async function getWeightProgress(chartType: string, userId: number) {
+  const response = await axios.get(`${baseUrl}/api/progress/weight`, {
+    params: {
+      chartType,
+      userId,
+    },
+    withCredentials: true,
+  });
+  return response.data;
+}
+
+export async function setWeightProgress(
+  weight: string,
+  userId: number,
+  date: Date
+) {
+  const response = await axios.put(
+    `${baseUrl}/api/progress/weight`,
+    {
+      weight,
+      userId,
+      date: date.toISOString().split("T")[0],
+    },
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+}

@@ -121,6 +121,7 @@ const Planner = () => {
               workout.day ==
               selectedDate.toLocaleDateString("en-US", { weekday: "long" })
           )}
+          selectedDate={selectedDate}
         />
         <div className="flex items-center justify-between">
           <h1 className="mt-10 text-lg font-bold">Meals</h1>
@@ -136,6 +137,7 @@ const Planner = () => {
               currentProgress={currentProgress}
               updateProgress={updateProgress}
               regenerateMeal={regenerateMeal}
+              selectedDate={selectedDate}
             />
           );
         })}

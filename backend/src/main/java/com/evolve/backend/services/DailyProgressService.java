@@ -1,12 +1,12 @@
 package com.evolve.backend.services;
 
 import com.evolve.backend.dtos.ProgressDto;
+import com.evolve.backend.dtos.WeightUpdateDto;
 import com.evolve.backend.models.DailyProgress;
 import com.evolve.backend.models.User;
 import com.evolve.backend.repositories.DailyProgressRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.evolve.backend.responses.WeightResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -71,7 +71,26 @@ public class DailyProgressService {
                 break;
             }
         }
-        System.out.println(streak);
         return streak;
+    }
+
+    public List<WeightResponse> getWeightProgress(Long userId, String chartType) {
+        List<WeightResponse> data = null;
+        if(chartType.equals("Last Month")) {
+            LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+            data = dailyProgressRepository.findWeightHistoryByRange(userId, thirtyDaysAgo);
+        }
+        else data = dailyProgressRepository.findAllWeightHistory(userId);
+        return data;
+    }
+
+    public DailyProgress setWeightProgress(WeightUpdateDto weightUpdateDto) {
+        DailyProgress dailyProgress = getDailyProgress(weightUpdateDto.getUserId(), weightUpdateDto.getDate());
+        User user = userService.findUserById(weightUpdateDto.getUserId());
+        if(dailyProgress == null) dailyProgress = new DailyProgress(user, weightUpdateDto.getDate(), false, false, false, false, false, weightUpdateDto.getWeight());
+        else {
+            dailyProgress.setWeight(weightUpdateDto.getWeight());
+        }
+        return dailyProgressRepository.save(dailyProgress);
     }
 }

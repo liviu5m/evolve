@@ -18,6 +18,8 @@ export function MealCard({
   regenerateMeal: (e: string) => void;
   selectedDate: Date;
 }) {
+  console.log(meal);
+
   let today = new Date();
   const mealKey = meal.mealType.toLowerCase() as keyof ProgressData;
   return (
@@ -25,7 +27,7 @@ export function MealCard({
       <div className="flex gap-4">
         <div className="w-24 h-24 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
           <img
-            src={`https://source.unsplash.com/random/200x200?food,${meal.mealType}`}
+            src={meal.imageUrl}
             alt={meal.name}
             className="w-full h-full object-cover"
           />
@@ -39,7 +41,8 @@ export function MealCard({
                   {meal.mealType}
                 </span>
                 <span className="text-xs text-gray-400 flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> {meal.mealTime}
+                  <Clock className="w-3 h-3" />{" "}
+                  {meal.mealTime.split(":").slice(0, -1).join(":")}
                 </span>
               </div>
               <h3

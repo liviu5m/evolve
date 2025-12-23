@@ -4,6 +4,7 @@ import com.evolve.backend.dtos.ProgressDto;
 import com.evolve.backend.dtos.WeightUpdateDto;
 import com.evolve.backend.models.DailyProgress;
 import com.evolve.backend.services.DailyProgressService;
+import com.evolve.backend.services.MealLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

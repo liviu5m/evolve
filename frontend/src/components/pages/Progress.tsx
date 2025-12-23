@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import BodyLayout from "../layouts/BodyLayout";
 import { Card } from "../elements/Card";
 import { Calendar, TrendingDown, Trophy } from "lucide-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   getCurrentStreak,
   getWeightProgress,
@@ -13,29 +18,39 @@ import { useAppContext } from "@/lib/AppProvider";
 import Box from "@mui/material/Box";
 import { LineChart } from "@mui/x-charts/LineChart";
 import type { WeightResponse } from "@/lib/Types";
+import { format, parseISO } from "date-fns";
+import Loader from "../elements/Loader";
 
 const Progress = () => {
   const today = new Date();
+  const queryClient = useQueryClient();
   const [chartType, setChartType] = useState("Last Month");
   const { user } = useAppContext();
   const [weight, setWeight] = useState<string>("");
-  const { data: workoutsDone } = useQuery({
+  const [weightProgressData, setWeightProgressData] = useState([]);
+  const { data: workoutsDone, isLoading: isWorkoutDoneLoading } = useQuery({
     queryKey: ["workouts-done"],
     queryFn: () => getWorkoutsDoneByUserId(user?.id || -1),
   });
-  const { data: currentStreak } = useQuery({
+  const { data: currentStreak, isLoading: isCurrentStreakLoading } = useQuery({
     queryKey: ["current-streak"],
     queryFn: () => getCurrentStreak(user?.id || -1),
   });
-  const { data: weightProgress } = useQuery({
-    queryKey: ["weight-progress"],
-    queryFn: () => getWeightProgress(chartType, user?.id || -1),
-  });
+  const { data: weightProgress, isLoading: isWeightProgressLoading } = useQuery(
+    {
+      queryKey: ["weight-progress", chartType],
+      queryFn: () => getWeightProgress(chartType, user?.id || -1),
+      placeholderData: keepPreviousData,
+    }
+  );
   const { mutate: updateWeight } = useMutation({
     mutationKey: ["set-weight"],
     mutationFn: () => setWeightProgress(weight, user?.id || -1, today),
     onSuccess: (data) => {
       console.log(data);
+      queryClient.invalidateQueries({
+        queryKey: ["weight-progress", chartType],
+      });
     },
     onError: (err) => {
       console.log(err);
@@ -44,6 +59,16 @@ const Progress = () => {
 
   useEffect(() => {
     if (weightProgress) {
+      setWeightProgressData(
+        weightProgress
+          .map((weightProgress: WeightResponse) => {
+            return {
+              ...weightProgress,
+              day: format(parseISO(weightProgress.day), "d MMMM"),
+            };
+          })
+          .filter((data: WeightResponse) => data.weight != null)
+      );
       let data = weightProgress.find(
         (progress: WeightResponse) =>
           progress.day == today.toISOString().split("T")[0]
@@ -54,36 +79,12 @@ const Progress = () => {
   }, [weightProgress]);
 
   const margin = { right: 24 };
-  const uData = [
-    4000, 3000, 2000, 2780, 1890, 2390, 3490, 4000, 3000, 2000, 2780, 1890,
-    2390, 3490, 4000, 3000, 2000, 2780, 1890, 2390, 3490,
-  ];
-  const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-  const xLabels = [
-    "Page A",
-    "Page B",
-    "Page C",
-    "Page D",
-    "Page E",
-    "Page F",
-    "Page G",
-    "Page A",
-    "Page B",
-    "Page C",
-    "Page D",
-    "Page E",
-    "Page F",
-    "Page G",
-    "Page A",
-    "Page B",
-    "Page C",
-    "Page D",
-    "Page E",
-    "Page F",
-    "Page G",
-  ];
 
-  return (
+  return isWorkoutDoneLoading ||
+    isCurrentStreakLoading ||
+    isWeightProgressLoading ? (
+    <Loader />
+  ) : (
     <BodyLayout>
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -94,8 +95,14 @@ const Progress = () => {
             <div>
               <p className="text-sm text-gray-500">Total Change</p>
               <p className="text-2xl font-bold text-[#0F172A]">
-                {1 > 0 ? "+" : ""}
-                {1} kg
+                {weightProgress[weightProgress.length - 1].weight -
+                  weightProgress[0].weight >
+                0
+                  ? "+"
+                  : ""}
+                {weightProgress[weightProgress.length - 1].weight -
+                  weightProgress[0].weight}{" "}
+                kg
               </p>
             </div>
           </Card>
@@ -151,10 +158,21 @@ const Progress = () => {
         <Box sx={{ width: "100%", height: 300 }}>
           <LineChart
             series={[
-              { data: pData, label: "pv" },
-              { data: uData, label: "uv" },
+              {
+                data: weightProgressData.map(
+                  (data: WeightResponse) => data.weight
+                ),
+                label: "Weight",
+              },
             ]}
-            xAxis={[{ scaleType: "point", data: xLabels }]}
+            xAxis={[
+              {
+                scaleType: "point",
+                data: weightProgressData.map(
+                  (data: WeightResponse) => data.day
+                ),
+              },
+            ]}
             yAxis={[{ width: 50 }]}
             margin={margin}
           />

@@ -50,6 +50,8 @@ public class MealLog {
     @Column(nullable = false)
     private MealType mealType;
 
+    private String imageUrl;
+
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
     private Date createdAt;

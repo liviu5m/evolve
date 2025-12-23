@@ -74,6 +74,7 @@ export type MealLog = {
   carbs: number;
   fats: number;
   mealType: string;
+  imageUrl: string;
   createdAt: string;
 };
 

@@ -20,8 +20,11 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import type { WeightResponse } from "@/lib/Types";
 import { format, parseISO } from "date-fns";
 import Loader from "../elements/Loader";
+import { usePlannerData } from "@/hooks/usePlannerData";
+import { useCurrentStreak } from "@/hooks/useCurrentStreak";
 
 const Progress = () => {
+  const { currentStreak, isLoading } = useCurrentStreak();
   const today = new Date();
   const queryClient = useQueryClient();
   const [chartType, setChartType] = useState("Last Month");
@@ -32,10 +35,7 @@ const Progress = () => {
     queryKey: ["workouts-done"],
     queryFn: () => getWorkoutsDoneByUserId(user?.id || -1),
   });
-  const { data: currentStreak, isLoading: isCurrentStreakLoading } = useQuery({
-    queryKey: ["current-streak"],
-    queryFn: () => getCurrentStreak(user?.id || -1),
-  });
+
   const { data: weightProgress, isLoading: isWeightProgressLoading } = useQuery(
     {
       queryKey: ["weight-progress", chartType],
@@ -80,9 +80,7 @@ const Progress = () => {
 
   const margin = { right: 24 };
 
-  return isWorkoutDoneLoading ||
-    isCurrentStreakLoading ||
-    isWeightProgressLoading ? (
+  return isWorkoutDoneLoading || isWeightProgressLoading || isLoading ? (
     <Loader />
   ) : (
     <BodyLayout>

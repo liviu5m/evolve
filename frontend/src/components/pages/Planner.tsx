@@ -15,70 +15,24 @@ import type { Meal, MealLog, ProgressData, Workout } from "@/lib/Types";
 import Loader from "../elements/Loader";
 import { MealCard } from "../elements/MealCard";
 import { getCurrentProgress, updateProgressData } from "@/api/dailyProgress";
+import { usePlannerData } from "@/hooks/usePlannerData";
 
 const Planner = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const { user } = useAppContext();
-  const queryClient = useQueryClient();
-
-  const { data: workouts, isPending: isWorkoutLoading } = useQuery({
-    queryKey: ["workout-user"],
-    queryFn: () => getWorkoutsByUser(user?.id || -1),
-  });
-
-  const { data: meals, isPending: isMealLoading } = useQuery({
-    queryKey: ["meals-user"],
-    queryFn: () => getMealsByUserId(user?.id || -1),
-  });
-  const { data: currentProgress, isPending: isProgressLoading } = useQuery({
-    queryKey: ["progress-user", selectedDate],
-    queryFn: () => getCurrentProgress(user?.id || -1, selectedDate),
-    placeholderData: keepPreviousData,
-  });
-
-  const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" });
-  console.log();
-  const dailyMeals = meals?.find((m: Meal) => m.day === dayName)?.meals || [];
-
-  const totalKcal = dailyMeals.reduce(
-    (acc: number, meal: MealLog) => acc + meal.calories,
-    0
-  );
-
-  const consumedKcal = dailyMeals.reduce((acc: number, meal: MealLog) => {
-    const mealKey = meal.mealType.toLowerCase() as keyof ProgressData;
-    return currentProgress?.[mealKey] ? acc + meal.calories : acc;
-  }, 0);
-
-  const { mutate: updateProgress } = useMutation({
-    mutationFn: (data: ProgressData) =>
-      updateProgressData(user?.id || -1, selectedDate, data),
-
-    onMutate: async (newData) => {
-      const queryKey = ["progress-user", selectedDate];
-
-      await queryClient.cancelQueries({ queryKey });
-
-      const previousProgress = queryClient.getQueryData<ProgressData>(queryKey);
-
-      queryClient.setQueryData(queryKey, newData);
-
-      return { previousProgress, queryKey };
-    },
-
-    onError: (err, newData, context) => {
-      if (context?.queryKey) {
-        queryClient.setQueryData(context.queryKey, context.previousProgress);
-      }
-      console.error("Mutation failed:", err);
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["progress-user", selectedDate],
-      });
-    },
-  });
+  const {
+    user,
+    workouts,
+    meals,
+    currentProgress,
+    dayName,
+    dailyMeals,
+    totalKcal,
+    consumedKcal,
+    isLoading,
+    queryClient,
+    dailyWorkout,
+    updateProgress,
+  } = usePlannerData(selectedDate);
 
   const { mutate: regenerateMealMutate } = useMutation({
     mutationKey: ["regenerate-meal", selectedDate],
@@ -103,7 +57,7 @@ const Planner = () => {
     regenerateMealMutate(mealKey);
   };
 
-  return isWorkoutLoading || isMealLoading || isProgressLoading ? (
+  return isLoading ? (
     <Loader />
   ) : (
     <BodyLayout>
@@ -116,11 +70,7 @@ const Planner = () => {
         <WorkoutCard
           currentProgress={currentProgress}
           updateProgress={updateProgress}
-          workout={workouts.find(
-            (workout: Workout) =>
-              workout.day ==
-              selectedDate.toLocaleDateString("en-US", { weekday: "long" })
-          )}
+          workout={dailyWorkout}
           selectedDate={selectedDate}
         />
         <div className="flex items-center justify-between">

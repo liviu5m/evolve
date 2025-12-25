@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class WorkoutService {
         this.workoutLogService = workoutLogService;
     }
 
+    @Cacheable(value = "workouts", key = "#userId.toString()")
     public List<Workout> getWorkoutByUserId(Long userId) {
         List<Workout> workouts = workoutRepository.findAllByUserIdWithLogs(userId);
         return workouts;

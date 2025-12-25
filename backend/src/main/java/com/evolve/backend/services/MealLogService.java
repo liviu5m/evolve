@@ -21,23 +21,26 @@ public class MealLogService {
 
     private final MealLogRepository mealLogRepository;
     private final RestTemplate restTemplate;
+    private final GrokService grokService;
 
-    public MealLogService(MealLogRepository mealLogRepository, RestTemplate restTemplate) {
+    public MealLogService(MealLogRepository mealLogRepository, RestTemplate restTemplate, GrokService grokService) {
         this.mealLogRepository = mealLogRepository;
         this.restTemplate = restTemplate;
+        this.grokService = grokService;
     }
 
     public MealLog createMealLog(Meal meal, MealLogResponse res) {
-        String keyword = res.name.split(" ")[0];
-        String imageUrl = getImageUrlFromName(keyword);
+        String imageUrl = null;
+        for(String a: res.name.split(" ")) {
+            imageUrl = getImageUrlFromName(a);
+            if(imageUrl != null) break;
+        }
         MealLog mealLog = new MealLog(meal, LocalTime.parse(res.mealTime), res.name, res.calories, res.protein, res.carbs, res.fats, res.mealType);
-        System.out.println(keyword);
-        System.out.println(imageUrl);
         mealLog.setImageUrl(imageUrl);
         return mealLogRepository.save(mealLog);
     }
 
-    private String getImageUrlFromName(String name) {
+    public String getImageUrlFromName(String name) {
         try {
             String url = "https://www.themealdb.com/api/json/v1/1/search.php?s=" + name;
 

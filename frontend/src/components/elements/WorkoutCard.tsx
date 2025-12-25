@@ -11,7 +11,7 @@ export function WorkoutCard({
   selectedDate,
 }: {
   workout: Workout;
-  updateProgress: (e: ProgressData) => void;
+  updateProgress?: (e: ProgressData) => void;
   currentProgress: ProgressData;
   selectedDate: Date;
 }) {
@@ -36,25 +36,27 @@ export function WorkoutCard({
             </span>
           </div>
         </div>
-        <button
-          onClick={() => {
-            if (isSameDay(today, selectedDate))
-              updateProgress({ workout: !currentProgress.workout });
-          }}
-          className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
-            currentProgress.workout
-              ? "bg-green-100 text-green-700"
-              : "bg-[#0F172A] text-white hover:bg-[#1E293B]"
-          } ${!isSameDay(today, selectedDate) && "opacity-50"}`}
-        >
-          {currentProgress.workout ? (
-            <>
-              <Check className="w-4 h-4" /> Completed
-            </>
-          ) : (
-            "Mark Complete"
-          )}
-        </button>
+        {updateProgress && (
+          <button
+            onClick={() => {
+              if (isSameDay(today, selectedDate))
+                updateProgress({ workout: !currentProgress.workout });
+            }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+              currentProgress.workout
+                ? "bg-green-100 text-green-700"
+                : "bg-[#0F172A] text-white hover:bg-[#1E293B]"
+            } ${!isSameDay(today, selectedDate) && "opacity-50"}`}
+          >
+            {currentProgress.workout ? (
+              <>
+                <Check className="w-4 h-4" /> Completed
+              </>
+            ) : (
+              "Mark Complete"
+            )}
+          </button>
+        )}
       </div>
 
       <div className="space-y-3">

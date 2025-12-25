@@ -2,43 +2,59 @@ import { ChevronRight, Dumbbell, Flame, Utensils } from "lucide-react";
 import BodyLayout from "../layouts/BodyLayout";
 import { Card } from "../elements/Card";
 import { ProgressBar } from "../elements/ProgressBar";
-import { Link, useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getWorkoutsByUser } from "@/api/workout";
+import { Link } from "react-router-dom";
 import { useAppContext } from "@/lib/AppProvider";
-import { toast, ToastContainer } from "react-toastify";
-import { generateFitnessPlan } from "@/api/user";
+import { useCurrentStreak } from "@/hooks/useCurrentStreak";
+import Loader from "../elements/Loader";
+import { usePlannerData } from "@/hooks/usePlannerData";
+import { WorkoutCard } from "../elements/WorkoutCard";
+import { MealCard } from "../elements/MealCard";
+import type { Meal, MealLog, ProgressData } from "@/lib/Types";
+import { useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
+
+const today = new Date();
 
 const Dashboard = () => {
-  const { user } = useAppContext();
-  const { data: workout } = useQuery({
-    queryKey: ["workout-user"],
-    queryFn: () => getWorkoutsByUser(user?.id || -1),
-  });
-  const navigate = useNavigate();
+  const { currentStreak, isLoading } = useCurrentStreak();
+  const {
+    consumedKcal,
+    totalKcal,
+    currentProgress,
+    dailyWorkout,
+    dailyMeals,
+    isLoading: isLoadingPlanner,
+  } = usePlannerData(today);
 
-  const { mutate: generateCustomPlan } = useMutation({
-    mutationKey: ["generate-plan"],
-    mutationFn: () => generateFitnessPlan(user),
-    onSuccess: (data) => {
-      console.log(data);
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
+  const allTasks = useMemo(() => {
+    return [
+      ...(dailyWorkout
+        ? [
+            {
+              ...dailyWorkout,
+              type: "Workout",
+              isCompleted: !!currentProgress?.workout,
+              id: `workout-${dailyWorkout.id}`,
+            },
+          ]
+        : []),
+      ...dailyMeals.map((meal: MealLog) => ({
+        ...meal,
+        type: meal.mealType,
+        isCompleted:
+          !!currentProgress?.[
+            meal.mealType.toLowerCase() as keyof ProgressData
+          ],
+      })),
+    ];
+  }, [dailyWorkout, dailyMeals, currentProgress]);
 
-  const generatePlan = () => {
-    if (!user?.goal || !user.height || !user.weight) {
-      toast(
-        "Complete your profile data to be able to generate a custom fitness plan."
-      );
-      navigate("/profile");
-    }
-    generateCustomPlan();
-  };
-
-  return (
+  const upNext = useMemo(() => {
+    return allTasks.filter((task) => !task.isCompleted).slice(0, 3);
+  }, [allTasks]);
+  return isLoading || isLoadingPlanner ? (
+    <Loader />
+  ) : (
     <BodyLayout>
       <div className="p-10">
         <div className="space-y-8">
@@ -56,21 +72,14 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 font-medium">Streak</p>
-                  <p className="font-bold text-[#0F172A]">12 Days</p>
+                  <p className="font-bold text-[#0F172A]">
+                    {currentStreak} Days
+                  </p>
                 </div>
               </Card>
             </div>
           </div>
-          {1 ? (
-            <div className="flex items-center justify-center">
-              <button
-                className="bg-blue-400 text-white text-xl font-semibold px-10 py-5 rounded-lg cursor-pointer hover:scale-105 shadow"
-                onClick={() => generatePlan()}
-              >
-                Generate My Custom Plan
-              </button>
-            </div>
-          ) : (
+          {
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
@@ -79,22 +88,18 @@ const Dashboard = () => {
                       <Utensils className="w-5 h-5" />
                     </div>
                     <span className="text-sm font-medium text-gray-500">
-                      {/* {todayPlan.caloriesConsumed} / {todayPlan.caloriesTarget} kcal */}
+                      {consumedKcal} / {totalKcal} kcal
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-[#0F172A] mb-2">
                     Nutrition
                   </h3>
                   <ProgressBar
-                    progress={
-                      // (todayPlan.caloriesConsumed / todayPlan.caloriesTarget) * 100
-                      50
-                    }
+                    progress={(consumedKcal / totalKcal) * 100}
                     color="#10B981"
                   />
                   <p className="text-sm text-gray-500 mt-2">
-                    {/* {todayPlan.caloriesTarget - todayPlan.caloriesConsumed} kcal */}
-                    remaining
+                    {totalKcal - consumedKcal} kcal remaining
                   </p>
                 </Card>
 
@@ -104,21 +109,25 @@ const Dashboard = () => {
                       <Dumbbell className="w-5 h-5" />
                     </div>
                     <span className="text-sm font-medium text-gray-500">
-                      {/* {todayPlan.workout?.completed ? "Done" : "Pending"} */}
-                      Done
+                      {currentProgress.workout ? (
+                        <span className="bg-green-500/75 px-3 py-2 rounded-lg font-semibold text-gray-100">
+                          Done
+                        </span>
+                      ) : (
+                        "Pending"
+                      )}
                     </span>
                   </div>
                   <h3 className="text-lg font-bold text-[#0F172A] mb-2">
                     Workout
                   </h3>
                   <p className="text-sm text-gray-600 mb-2 line-clamp-1">
-                    {/* {todayPlan.workout?.name || "Rest Day"} */}
-                    Leg Day
+                    {dailyWorkout.sessionLabel}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <span>60 min</span>
+                    <span>{dailyWorkout.totalTime} min</span>
                     <span>•</span>
-                    <span>Work</span>
+                    <span>{dailyWorkout.day}</span>
                   </div>
                 </Card>
 
@@ -152,56 +161,39 @@ const Dashboard = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {/* {todayPlan.meals.slice(0, 2).map((meal, idx) => (
-                <motion.div
-                  key={meal.id}
-                  initial={{
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    delay: idx * 0.1,
-                  }}
-                >
-                  <Card className="flex items-center p-4 hover:shadow-md transition-shadow cursor-pointer">
-                    <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 mr-4 overflow-hidden">
-                      <img
-                        src={`https://source.unsplash.com/random/200x200?food,${meal.type}`}
-                        alt={meal.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="text-xs font-bold text-[#FF6B6B] uppercase tracking-wider">
-                            {meal.type} • {meal.time}
-                          </span>
-                          <h4 className="font-bold text-[#0F172A]">
-                            {meal.name}
-                          </h4>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-sm font-bold text-gray-900">
-                            {meal.calories}
-                          </span>
-                          <span className="text-xs text-gray-500 block">
-                            kcal
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                </motion.div>
-              ))} */}
+                  {upNext.length > 0 ? (
+                    upNext.map((item, idx) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                      >
+                        {item.type == "Workout" ? (
+                          <WorkoutCard
+                            currentProgress={currentProgress}
+                            workout={dailyWorkout}
+                            selectedDate={today}
+                          />
+                        ) : (
+                          <MealCard
+                            key={idx}
+                            meal={item}
+                            currentProgress={currentProgress}
+                            selectedDate={today}
+                          />
+                        )}
+                      </motion.div>
+                    ))
+                  ) : (
+                    <p className="text-gray-400 text-sm italic">
+                      All caught up for today! 🎉
+                    </p>
+                  )}
                 </div>
               </div>
             </>
-          )}
+          }
         </div>
       </div>
     </BodyLayout>

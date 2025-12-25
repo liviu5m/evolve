@@ -11,6 +11,8 @@ import com.evolve.backend.responses.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
 
@@ -37,6 +39,7 @@ public class MealService {
         return meal;
     }
 
+    @Cacheable(value = "meals", key = "#userId.toString()")
     public List<Meal> getMealsByUserId(Long userId) {
         List<Meal> meals = mealRepository.findByUserAndDayWithLogs(userId);
         return meals;
@@ -52,6 +55,7 @@ public class MealService {
         }
     }
 
+    @CacheEvict(value = "meals", key = "#userId.toString()")
     public Meal regenerateMealPlan(RegenerateMealDto regenerateMealDto) throws JsonProcessingException {
         User user = userService.findUserById(regenerateMealDto.getUserId());
         Meal meal = getMealById(regenerateMealDto.getMealId());
@@ -72,7 +76,14 @@ public class MealService {
         mealLog.setCarbs(meals.carbs);
         mealLog.setFats(meals.fats);
         mealLog.setMealType(meals.mealType);
+        String imageUrl = null;
+        for(String a: meals.name.split(" ")) {
+            imageUrl = mealLogService.getImageUrlFromName(a);
+            if(imageUrl != null) break;
+        }
+        mealLog.setImageUrl(imageUrl);
         mealRepository.save(meal);
+
         return meal;
     }
 

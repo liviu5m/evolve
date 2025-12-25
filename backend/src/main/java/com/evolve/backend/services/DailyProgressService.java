@@ -6,6 +6,8 @@ import com.evolve.backend.models.DailyProgress;
 import com.evolve.backend.models.User;
 import com.evolve.backend.repositories.DailyProgressRepository;
 import com.evolve.backend.responses.WeightResponse;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ public class DailyProgressService {
         this.userService = userService;
     }
 
+    @CacheEvict(value = "progress", key = "#progressDto.userId.toString() + '_' + #progressDto.date.toString()")
     public DailyProgress updateDailyProgress(ProgressDto progressDto) {
         User user = userService.findUserById(progressDto.getUserId());
         DailyProgress dailyProgress = dailyProgressRepository.findByUserIdAndDate(progressDto.getUserId(), progressDto.getDate()).orElse(null);
@@ -40,7 +43,7 @@ public class DailyProgressService {
         dailyProgressRepository.save(dailyProgress);
         return dailyProgress;
     }
-
+    @Cacheable(value = "progress", key = "#userId.toString() + '_' + #date.toString()")
     public DailyProgress getDailyProgress(Long userId, LocalDate date) {
         DailyProgress dailyProgress = dailyProgressRepository.findByUserIdAndDate(userId, date).orElse(null);
         return dailyProgress;
@@ -74,6 +77,7 @@ public class DailyProgressService {
         return streak;
     }
 
+    @Cacheable(value = "weight_charts", key = "#userId.toString() + #chartType")
     public List<WeightResponse> getWeightProgress(Long userId, String chartType) {
         List<WeightResponse> data = null;
         if(chartType.equals("Last Month")) {

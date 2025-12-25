@@ -93,6 +93,7 @@ public class GrokService {
                         "4. 'mealTime' MUST be a string in 24-hour format 'HH:mm' (e.g., '08:30', '13:00'). Do not include seconds.\n" +
                         "5. Nutritional values should be numbers (Double).\n" +
                         "6. Consider that very meal calories sum should be according to the goal weight and height.\n" +
+                        "6. Diversify the meal every day, so you don't have the same meals in the same day.\n" +
                         "7. Return ONLY valid JSON without markdown formatting.\n\n" +
                         "JSON Structure:\n" +
                         "{\n" +

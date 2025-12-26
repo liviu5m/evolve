@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import BodyLayout from "../layouts/BodyLayout";
 import { Card } from "../elements/Card";
 import { Calendar, TrendingDown, Trophy } from "lucide-react";
@@ -20,7 +20,6 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import type { WeightResponse } from "@/lib/Types";
 import { format, parseISO } from "date-fns";
 import Loader from "../elements/Loader";
-import { usePlannerData } from "@/hooks/usePlannerData";
 import { useCurrentStreak } from "@/hooks/useCurrentStreak";
 
 const Progress = () => {
@@ -30,7 +29,6 @@ const Progress = () => {
   const [chartType, setChartType] = useState("Last Month");
   const { user } = useAppContext();
   const [weight, setWeight] = useState<string>("");
-  const [weightProgressData, setWeightProgressData] = useState([]);
   const { data: workoutsDone, isLoading: isWorkoutDoneLoading } = useQuery({
     queryKey: ["workouts-done"],
     queryFn: () => getWorkoutsDoneByUserId(user?.id || -1),
@@ -57,26 +55,27 @@ const Progress = () => {
     },
   });
 
-  useEffect(() => {
-    if (weightProgress) {
-      setWeightProgressData(
-        weightProgress
-          .map((weightProgress: WeightResponse) => {
-            return {
-              ...weightProgress,
-              day: format(parseISO(weightProgress.day), "d MMMM"),
-            };
-          })
-          .filter((data: WeightResponse) => data.weight != null)
-      );
-      let data = weightProgress.find(
-        (progress: WeightResponse) =>
-          progress.day == today.toISOString().split("T")[0]
-      );
-
-      if (data) setWeight(data.weight);
-    }
+  const formattedProgressData = useMemo(() => {
+    return (
+      weightProgress
+        ?.filter((data: WeightResponse) => data.weight != null)
+        .map((item: WeightResponse) => ({
+          ...item,
+          day: format(parseISO(item.day), "d MMMM"),
+        })) || []
+    );
   }, [weightProgress]);
+
+  useEffect(() => {
+    const todayISO = today.toISOString().split("T")[0];
+    const todayData = weightProgress?.find(
+      (p: WeightResponse) => p.day === todayISO
+    );
+
+    if (todayData) {
+      setWeight(todayData.weight);
+    }
+  }, [weightProgress, today]);
 
   const margin = { right: 24 };
 
@@ -93,13 +92,14 @@ const Progress = () => {
             <div>
               <p className="text-sm text-gray-500">Total Change</p>
               <p className="text-2xl font-bold text-[#0F172A]">
-                {weightProgress[weightProgress.length - 1].weight -
-                  weightProgress[0].weight >
+                {formattedProgressData[formattedProgressData.length - 1]
+                  .weight -
+                  formattedProgressData[0].weight >
                 0
                   ? "+"
                   : ""}
-                {weightProgress[weightProgress.length - 1].weight -
-                  weightProgress[0].weight}{" "}
+                {formattedProgressData[formattedProgressData.length - 1]
+                  .weight - formattedProgressData[0].weight}{" "}
                 kg
               </p>
             </div>
@@ -157,7 +157,7 @@ const Progress = () => {
           <LineChart
             series={[
               {
-                data: weightProgressData.map(
+                data: formattedProgressData.map(
                   (data: WeightResponse) => data.weight
                 ),
                 label: "Weight",
@@ -166,7 +166,7 @@ const Progress = () => {
             xAxis={[
               {
                 scaleType: "point",
-                data: weightProgressData.map(
+                data: formattedProgressData.map(
                   (data: WeightResponse) => data.day
                 ),
               },

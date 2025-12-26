@@ -91,3 +91,11 @@ export type WeightResponse = {
   weight: number;
   day: string;
 };
+
+export type ShoppingItem = {
+  id: number;
+  name: string;
+  quantity: string;
+  category: string;
+  purchased: boolean;
+}

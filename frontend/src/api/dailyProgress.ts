@@ -76,3 +76,4 @@ export async function setWeightProgress(
   );
   return response.data;
 }
+

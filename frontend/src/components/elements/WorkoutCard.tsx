@@ -42,7 +42,7 @@ export function WorkoutCard({
               if (isSameDay(today, selectedDate))
                 updateProgress({ workout: !currentProgress.workout });
             }}
-            className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors cursor-pointer ${
               currentProgress.workout
                 ? "bg-green-100 text-green-700"
                 : "bg-[#0F172A] text-white hover:bg-[#1E293B]"

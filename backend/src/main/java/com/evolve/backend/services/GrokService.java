@@ -2,6 +2,7 @@ package com.evolve.backend.services;
 
 
 import com.evolve.backend.dtos.UserDto;
+import com.evolve.backend.models.Meal;
 import com.evolve.backend.models.MealLog;
 import com.evolve.backend.models.User;
 import org.slf4j.Logger;
@@ -74,6 +75,7 @@ public class GrokService {
 
         return getGrokResponse(prompt);
     }
+
     public String generateMealUserPlan(UserDto userDto) {
         String dietaryInfo = String.format("Goal: %s, Activity Level: %s, Restrictions: %s",
                 userDto.getGoal(), userDto.getActivityLevel(), userDto.getDailyRestrictions());
@@ -119,6 +121,39 @@ public class GrokService {
                 userDto.getHeight(),
                 userDto.getWeight()
         );
+
+        return getGrokResponse(prompt);
+    }
+    public String generateWeeklyShoppingList(List<Meal> mealList) {
+        if (mealList == null || mealList.isEmpty()) {
+            return "[]";
+        }
+
+        StringBuilder mealContext = new StringBuilder();
+        for (Meal meal : mealList) {
+            mealContext.append("Day: ").append(meal.getDay()).append("\n");
+            for (MealLog log : meal.getMeals()) {
+                mealContext.append("- ").append(log.getName())
+                        .append(" (P: ").append(log.getProtein())
+                        .append("g, C: ").append(log.getCarbs())
+                        .append("g, F: ").append(log.getFats()).append("g)\n");
+            }
+            mealContext.append("\n");
+        }
+
+        String prompt = "Act as a specialized food data parser. Based on this meal plan:\n\n" +
+                mealContext.toString() +
+                "\n\nGenerate a consolidated shopping list in JSON format as a SINGLE FLAT ARRAY." +
+                "\n\nRequired JSON Structure:\n" +
+                "[\n" +
+                "  { \"name\": \"Product Name\", \"category\": \"Produce/Meat/Dairy/Pantry\", \"quantity\": \"Amount\" }\n" +
+                "]" +
+                "\n\nCRITICAL RULES:\n" +
+                "1. RETURN ONLY A RAW JSON ARRAY. DO NOT wrap it in an object like { \"items\": [] }.\n" +
+                "2. DO NOT include markdown code blocks (```json) or any conversational text.\n" +
+                "3. Every object must have 'name', 'category', and 'quantity'.\n" +
+                "4. Combine duplicate items and sum their quantities.\n" +
+                "5. Ensure the response starts with '[' and ends with ']'.";
 
         return getGrokResponse(prompt);
     }

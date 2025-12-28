@@ -1,14 +1,5 @@
 import BodyLayout from "../layouts/BodyLayout";
 import { User } from "lucide-react";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useState } from "react";
 import type { UserUpdateData, Workout } from "@/lib/Types";
 import { useAppContext } from "@/lib/AppProvider";

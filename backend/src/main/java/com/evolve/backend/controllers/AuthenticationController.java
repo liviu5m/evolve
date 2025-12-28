@@ -48,7 +48,7 @@ public class AuthenticationController {
 
         ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwtToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge((int) (jwtService.getExpirationTime() / 1000))
                 .sameSite("Lax")
@@ -79,6 +79,7 @@ public class AuthenticationController {
 
     @GetMapping("/jwt")
     public ResponseEntity<?> verifyAuth(@CookieValue(value = "jwt", required = false) String token) {
+        System.out.println(token);
         if (token != null && jwtService.isTokenValid(token)) {
             String username = jwtService.extractUsername(token);
             User user = userService.findByEmail(username);

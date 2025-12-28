@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import BodyLayout from "../layouts/BodyLayout";
 import { WeeklyCalendar } from "../elements/WeeklyCalendar";
 import { WorkoutCard } from "../elements/WorkoutCard";
-import { useAppContext } from "@/lib/AppProvider";
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { getWorkoutsByUser } from "@/api/workout";
-import { getMealsByUserId, regenerateMealFunction } from "@/api/meal";
-import type { Meal, MealLog, ProgressData, Workout } from "@/lib/Types";
+import { useMutation } from "@tanstack/react-query";
+import { regenerateMealFunction } from "@/api/meal";
+import type { Meal, MealLog } from "@/lib/Types";
 import Loader from "../elements/Loader";
 import { MealCard } from "../elements/MealCard";
-import { getCurrentProgress, updateProgressData } from "@/api/dailyProgress";
 import { usePlannerData } from "@/hooks/usePlannerData";
 
 const Planner = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const {
     user,
-    workouts,
     meals,
     currentProgress,
     dayName,

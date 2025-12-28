@@ -45,7 +45,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Cookie jwtCookie = createJwtCookie(jwtToken);
         response.addCookie(jwtCookie);
-        response.sendRedirect("http://localhost:5173/");
+        System.out.println(jwtToken);
+//        response.sendRedirect("http://localhost:5173/");
+        response.sendRedirect("https://evolveapp.vercel.app/");
     }
 
     private User findOrCreateUser(OAuth2User oauth2User) {
@@ -68,7 +70,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private Cookie createJwtCookie(String jwtToken) {
         Cookie jwtCookie = new Cookie("jwt", jwtToken);
         jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(false);
+        jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge((int) (jwtService.getExpirationTime() / 1000));
         return jwtCookie;

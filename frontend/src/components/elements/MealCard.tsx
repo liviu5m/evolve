@@ -1,9 +1,7 @@
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
 import { Check, RefreshCw, Clock } from "lucide-react";
 import type { MealLog, ProgressData } from "@/lib/Types";
 import { Card } from "./Card";
-import { isPast, isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
 
 export function MealCard({
   meal,

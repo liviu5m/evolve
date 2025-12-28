@@ -1,12 +1,7 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import BodyLayout from "../layouts/BodyLayout";
 import { useAppContext } from "@/lib/AppProvider";
-import {
-  useMutation,
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getShoppingItemsByUserId,
   uncheckShoppingItems,
@@ -36,7 +31,7 @@ const Grocery = () => {
   const { mutate: purchase } = useMutation({
     mutationKey: ["purchase-grocery"],
     mutationFn: (itemId: number) => purchaseShoppingItem(itemId),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shopping-items"] });
     },
     onError: (err) => {

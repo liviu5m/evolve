@@ -1,8 +1,6 @@
-import React from "react";
-import { Dumbbell, Check, Clock, PlayCircle } from "lucide-react";
-import type { ProgressData, Workout, WorkoutLog } from "@/lib/Types";
-import { Card } from "./Card";
-import { isPast, isSameDay } from "date-fns";
+import { Check, Clock } from "lucide-react";
+import type { ProgressData, Workout } from "@/lib/Types";
+import { isSameDay } from "date-fns";
 
 export function WorkoutCard({
   workout,

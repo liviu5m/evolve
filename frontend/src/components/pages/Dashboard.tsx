@@ -3,14 +3,13 @@ import BodyLayout from "../layouts/BodyLayout";
 import { Card } from "../elements/Card";
 import { ProgressBar } from "../elements/ProgressBar";
 import { Link } from "react-router-dom";
-import { useAppContext } from "@/lib/AppProvider";
 import { useCurrentStreak } from "@/hooks/useCurrentStreak";
 import Loader from "../elements/Loader";
 import { usePlannerData } from "@/hooks/usePlannerData";
 import { WorkoutCard } from "../elements/WorkoutCard";
 import { MealCard } from "../elements/MealCard";
-import type { Meal, MealLog, ProgressData } from "@/lib/Types";
-import { useEffect, useMemo } from "react";
+import type { MealLog, ProgressData } from "@/lib/Types";
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 
 const today = new Date();

@@ -1,7 +1,6 @@
 import { getCurrentProgress, updateProgressData } from "@/api/dailyProgress";
 import { getMealsByUserId } from "@/api/meal";
 import { getWorkoutsByUser } from "@/api/workout";
-import Loader from "@/components/elements/Loader";
 import { useAppContext } from "@/lib/AppProvider";
 import type { Meal, MealLog, ProgressData, Workout } from "@/lib/Types";
 import {
@@ -67,6 +66,7 @@ export const usePlannerData = (selectedDate: Date) => {
     },
 
     onError: (err, newData, context) => {
+      console.log(newData);
       if (context?.queryKey) {
         queryClient.setQueryData(context.queryKey, context.previousProgress);
       }

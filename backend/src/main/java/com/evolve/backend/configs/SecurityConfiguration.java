@@ -55,7 +55,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "https://evolveapp.vercel.app/"));
         configuration.setAllowedMethods(List.of("GET","POST", "DELETE", "PUT", "OPTIONS"));
         configuration.setAllowedHeaders(List.of(
                 "Authorization",

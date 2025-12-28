@@ -10,13 +10,12 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "@/api/user";
 import { toast, ToastContainer } from "react-toastify";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppContext } from "@/lib/AppProvider";
 
 const Header = () => {
   const { setUser } = useAppContext();
-  const navigate = useNavigate();
-  const {pathname} = useLocation();
+  const { pathname } = useLocation();
   const { mutate: logout } = useMutation({
     mutationKey: ["logout-user"],
     mutationFn: () => logoutUser(),
@@ -33,10 +32,10 @@ const Header = () => {
   });
 
   let title;
-  if(pathname == "/") title = "Dashboard";
-  else if(pathname == "/planner") title="Weekly Planner";
-  else if(pathname == "/progress") title="Your Progress";
-  else if(pathname == "/grocery") title="Grocery List";
+  if (pathname == "/") title = "Dashboard";
+  else if (pathname == "/planner") title = "Weekly Planner";
+  else if (pathname == "/progress") title = "Your Progress";
+  else if (pathname == "/grocery") title = "Grocery List";
 
   return (
     <div className="w-full bg-white shadow px-7 py-5 flex items-center justify-between">

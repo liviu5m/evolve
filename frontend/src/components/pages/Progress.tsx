@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BodyLayout from "../layouts/BodyLayout";
 import { Card } from "../elements/Card";
 import { Calendar, TrendingDown, Trophy } from "lucide-react";
@@ -9,7 +9,6 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import {
-  getCurrentStreak,
   getWeightProgress,
   getWorkoutsDoneByUserId,
   setWeightProgress,

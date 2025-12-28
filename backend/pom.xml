@@ -9,9 +9,9 @@
 		<relativePath/>
 	</parent>
 	<groupId>com.evolve</groupId>
-	<artifactId>backend</artifactId>
+	<artifactId>evolve</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>backend</name>
+	<name>evolve</name>
 	<description>Evolve</description>
 	<url/>
 	<licenses>

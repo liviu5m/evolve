@@ -22,10 +22,12 @@ interface AppProviderProps {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, error } = useQuery({
     queryKey: ["jwt-user"],
     queryFn: () => getUser(),
   });
+
+  console.log(data, error);
 
   useEffect(() => {
     if (typeof data === "object") setUser(data);

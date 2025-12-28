@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Calendar } from "lucide-react";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 interface Props {
   selectedDate: Date;

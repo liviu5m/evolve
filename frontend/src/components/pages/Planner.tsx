@@ -52,37 +52,43 @@ const Planner = () => {
     <Loader />
   ) : (
     <BodyLayout>
-      <div className="space-y-8">
-        <WeeklyCalendar
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-        />
-        <h1 className="my-8 text-lg font-bold">Today's Training</h1>
-        <WorkoutCard
-          currentProgress={currentProgress}
-          updateProgress={updateProgress}
-          workout={dailyWorkout}
-          selectedDate={selectedDate}
-        />
-        <div className="flex items-center justify-between">
-          <h1 className="mt-10 text-lg font-bold">Meals</h1>
-          <h2 className="text-gray-400 text-sm">
-            {consumedKcal}/{totalKcal} kcal
-          </h2>
+      {dailyWorkout ? (
+        <div className="space-y-8">
+          <WeeklyCalendar
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+          />
+          <h1 className="my-8 text-lg font-bold">Today's Training</h1>
+          <WorkoutCard
+            currentProgress={currentProgress}
+            updateProgress={updateProgress}
+            workout={dailyWorkout}
+            selectedDate={selectedDate}
+          />
+          <div className="flex items-center justify-between">
+            <h1 className="mt-10 text-lg font-bold">Meals</h1>
+            <h2 className="text-gray-400 text-sm">
+              {consumedKcal}/{totalKcal} kcal
+            </h2>
+          </div>
+          {dailyMeals.map((meal: MealLog, i: number) => {
+            return (
+              <MealCard
+                key={i}
+                meal={meal}
+                currentProgress={currentProgress}
+                updateProgress={updateProgress}
+                regenerateMeal={regenerateMeal}
+                selectedDate={selectedDate}
+              />
+            );
+          })}
         </div>
-        {dailyMeals.map((meal: MealLog, i: number) => {
-          return (
-            <MealCard
-              key={i}
-              meal={meal}
-              currentProgress={currentProgress}
-              updateProgress={updateProgress}
-              regenerateMeal={regenerateMeal}
-              selectedDate={selectedDate}
-            />
-          );
-        })}
-      </div>
+      ) : (
+        <p className="text-center text-xl font-semibold text-blue-400">
+          Complete your profile and generate your customized fitness program !
+        </p>
+      )}
     </BodyLayout>
   );
 };

@@ -51,7 +51,7 @@ public class AuthenticationController {
                 .secure(true)
                 .path("/")
                 .maxAge((int) (jwtService.getExpirationTime() / 1000))
-                .sameSite("Lax")
+                .sameSite("None")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());

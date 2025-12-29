@@ -6,6 +6,7 @@ import com.evolve.backend.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,8 +44,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String jwtToken = jwtService.generateToken(user);
 
-        Cookie jwtCookie = createJwtCookie(jwtToken);
-        response.addCookie(jwtCookie);
+        ResponseCookie jwtCookie = createJwtCookie(jwtToken);
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, jwtCookie.toString());
         System.out.println(jwtToken);
 //        response.sendRedirect("http://localhost:5173/");
         response.sendRedirect("https://evolveapp.vercel.app/");
@@ -67,12 +68,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         return userRepository.save(user);
     }
 
-    private Cookie createJwtCookie(String jwtToken) {
-        Cookie jwtCookie = new Cookie("jwt", jwtToken);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge((int) (jwtService.getExpirationTime() / 1000));
+    private ResponseCookie createJwtCookie(String jwtToken) {
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", jwtToken)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(jwtService.getExpirationTime() / 1000)
+                .build();
         return jwtCookie;
     }
 }

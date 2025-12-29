@@ -45,18 +45,29 @@ public class AuthenticationService {
     }
 
     public User authenticate(LoginUserDto input) {
-        User user = userRepository.findByEmail(input.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-        if(!user.getEnabled()) {
+        User user = userRepository.findByEmail(input.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getEnabled() == null || !user.getEnabled()) {
             resendVerificationCode(user.getId());
-            throw new RuntimeException("User is disabled " + user.getId());
+            throw new RuntimeException("User is not verified. Check your email.");
         }
-        if(user.getProvider().equals("google")) throw new RuntimeException("You can only log into this account only using credentials");
+
+        if ("google".equals(user.getProvider())) {
+            throw new RuntimeException("This account uses Google Login only.");
+        }
+
+        System.out.println("Login Attempt for: " + input.getEmail());
+        System.out.println(input.getPassword());
+        System.out.println("Password Match: " + passwordEncoder.matches(String.valueOf(input.getPassword()), user.getPassword()));
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getEmail(),
                         input.getPassword()
                 )
         );
+
         return user;
     }
 

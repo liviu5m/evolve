@@ -57,67 +57,79 @@ const Grocery = () => {
     },
   });
 
+  console.log(items);
+
   return isPending ? (
     <Loader />
   ) : (
     <BodyLayout>
       <div className="flex items-center justify-between mb-10">
         <h1 className="text-xl font-bold">Weekly Shopping List</h1>
-        <h4
-          className="text-[#FF6B6B] font-semibold cursor-pointer flex items-center gap-3"
-          onClick={() => {
-            uncheck();
-          }}
-        >
-          <span>Clear Checked</span>
-          {isUncheckPending && (
-            <div className="w-5 h-5 border-4 border-t-[#FF6B6B] border-gray-300 rounded-full animate-spin"></div>
-          )}
-        </h4>
+        {Object.keys(items ?? {}).length > 0 ? (
+          <h4
+            className="text-[#FF6B6B] font-semibold cursor-pointer flex items-center gap-3"
+            onClick={() => {
+              uncheck();
+            }}
+          >
+            <span>Clear Checked</span>
+            {isUncheckPending && (
+              <div className="w-5 h-5 border-4 border-t-[#FF6B6B] border-gray-300 rounded-full animate-spin"></div>
+            )}
+          </h4>
+        ) : (
+          <div></div>
+        )}
       </div>
-      <div className="space-y-6">
-        {items &&
-          Object.entries(items).map(([category, items]) => (
-            <Card key={category} noPadding>
-              <div className="bg-gray-50 px-4 py-2 border-b border-gray-100">
-                <h3 className="font-bold text-gray-700 capitalize">
-                  {category.toLowerCase()}
-                </h3>
-              </div>
-              <div className="divide-y divide-gray-100">
-                {items.map((item, idx) => (
-                  <label
-                    key={`${item.id}-${idx}`}
-                    className="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer group"
-                  >
-                    <input
-                      type="checkbox"
-                      defaultChecked={item.purchased}
-                      className="w-5 h-5 rounded border-gray-300 text-[#FF6B6B] focus:ring-[#FF6B6B] checkbox-input"
-                      onClick={() => {
-                        purchase(item.id);
-                      }}
-                    />
-                    <div className="ml-3 flex-1">
-                      <span
-                        className={`font-medium ${
-                          item.purchased
-                            ? "line-through text-gray-400"
-                            : "text-gray-900"
-                        }`}
-                      >
-                        {item.name}
+      {Object.keys(items ?? {}).length > 0 ? (
+        <div className="space-y-6">
+          {items &&
+            Object.entries(items).map(([category, items]) => (
+              <Card key={category} noPadding>
+                <div className="bg-gray-50 px-4 py-2 border-b border-gray-100">
+                  <h3 className="font-bold text-gray-700 capitalize">
+                    {category.toLowerCase()}
+                  </h3>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {items.map((item, idx) => (
+                    <label
+                      key={`${item.id}-${idx}`}
+                      className="flex items-center px-4 py-3 hover:bg-gray-50 cursor-pointer group"
+                    >
+                      <input
+                        type="checkbox"
+                        defaultChecked={item.purchased}
+                        className="w-5 h-5 rounded border-gray-300 text-[#FF6B6B] focus:ring-[#FF6B6B] checkbox-input"
+                        onClick={() => {
+                          purchase(item.id);
+                        }}
+                      />
+                      <div className="ml-3 flex-1">
+                        <span
+                          className={`font-medium ${
+                            item.purchased
+                              ? "line-through text-gray-400"
+                              : "text-gray-900"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
+                      </div>
+                      <span className="text-gray-500 text-sm">
+                        {item.quantity}{" "}
                       </span>
-                    </div>
-                    <span className="text-gray-500 text-sm">
-                      {item.quantity}{" "}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </Card>
-          ))}
-      </div>
+                    </label>
+                  ))}
+                </div>
+              </Card>
+            ))}
+        </div>
+      ) : (
+        <p className="text-center text-xl font-semibold text-blue-400">
+          Complete your profile and generate your customized fitness program !
+        </p>
+      )}
     </BodyLayout>
   );
 };

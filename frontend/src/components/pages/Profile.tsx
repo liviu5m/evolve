@@ -59,6 +59,7 @@ const Profile = () => {
         "Complete your profile data to be able to generate a custom fitness plan."
       );
       navigate("/profile");
+      return;
     }
     generateCustomPlan();
   };
@@ -194,7 +195,7 @@ const Profile = () => {
             className="bg-blue-400 text-white text-xl font-semibold px-10 py-5 rounded-lg cursor-pointer hover:scale-105 shadow h-fit mt-10 flex items-center justify-center gap-5"
             onClick={() => generatePlan()}
           >
-            {workouts
+            {workouts.length > 0
               ? isPending
                 ? "Regenerating"
                 : "Regenerate"

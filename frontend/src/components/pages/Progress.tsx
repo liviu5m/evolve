@@ -20,10 +20,11 @@ import type { WeightResponse } from "@/lib/Types";
 import { format, parseISO } from "date-fns";
 import Loader from "../elements/Loader";
 import { useCurrentStreak } from "@/hooks/useCurrentStreak";
+import { usePlannerData } from "@/hooks/usePlannerData";
+const today = new Date();
 
 const Progress = () => {
   const { currentStreak, isLoading } = useCurrentStreak();
-  const today = new Date();
   const queryClient = useQueryClient();
   const [chartType, setChartType] = useState("Last Month");
   const { user } = useAppContext();
@@ -32,6 +33,7 @@ const Progress = () => {
     queryKey: ["workouts-done"],
     queryFn: () => getWorkoutsDoneByUserId(user?.id || -1),
   });
+  const { dailyWorkout } = usePlannerData(today);
 
   const { data: weightProgress, isLoading: isWeightProgressLoading } = useQuery(
     {
@@ -91,14 +93,16 @@ const Progress = () => {
             <div>
               <p className="text-sm text-gray-500">Total Change</p>
               <p className="text-2xl font-bold text-[#0F172A]">
-                {formattedProgressData[formattedProgressData.length - 1]
-                  .weight -
+                {formattedProgressData.length > 0 &&
+                formattedProgressData[formattedProgressData.length - 1].weight -
                   formattedProgressData[0].weight >
-                0
+                  0
                   ? "+"
                   : ""}
-                {formattedProgressData[formattedProgressData.length - 1]
-                  .weight - formattedProgressData[0].weight}{" "}
+                {formattedProgressData.length > 0
+                  ? formattedProgressData[formattedProgressData.length - 1]
+                      .weight - formattedProgressData[0].weight
+                  : 0}{" "}
                 kg
               </p>
             </div>
@@ -174,34 +178,40 @@ const Progress = () => {
             margin={margin}
           />
         </Box>
-        <Card>
-          <h3 className="text-lg font-bold text-[#0F172A] mb-4">
-            Log Progress ({today.toISOString().split("T")[0]})
-          </h3>
-          <form
-            className="space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              updateWeight();
-            }}
-          >
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Current Weight (kg)
-              </label>
-              <input
-                type="number"
-                className="w-full outline-0 border px-4 py-2 border-gray-200 rounded-lg shadow text-sm"
-                placeholder="78.5"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-              />
-            </div>
-            <button className="w-full bg-[#0F172A] text-white py-2 rounded-lg font-medium hover:bg-[#1E293B] transition-colors">
-              Save Entry
-            </button>
-          </form>
-        </Card>
+        {dailyWorkout ? (
+          <Card>
+            <h3 className="text-lg font-bold text-[#0F172A] mb-4">
+              Log Progress ({today.toISOString().split("T")[0]})
+            </h3>
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateWeight();
+              }}
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Current Weight (kg)
+                </label>
+                <input
+                  type="number"
+                  className="w-full outline-0 border px-4 py-2 border-gray-200 rounded-lg shadow text-sm"
+                  placeholder="78.5"
+                  value={weight}
+                  onChange={(e) => setWeight(e.target.value)}
+                />
+              </div>
+              <button className="w-full bg-[#0F172A] text-white py-2 rounded-lg font-medium hover:bg-[#1E293B] transition-colors">
+                Save Entry
+              </button>
+            </form>
+          </Card>
+        ) : (
+          <p className="text-center text-xl font-semibold text-blue-400">
+            Complete your profile and generate your customized fitness program !
+          </p>
+        )}
       </div>
     </BodyLayout>
   );

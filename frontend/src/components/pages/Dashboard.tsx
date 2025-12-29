@@ -78,7 +78,7 @@ const Dashboard = () => {
               </Card>
             </div>
           </div>
-          {
+          {dailyWorkout ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
@@ -192,7 +192,12 @@ const Dashboard = () => {
                 </div>
               </div>
             </>
-          }
+          ) : (
+            <p className="text-center text-xl font-semibold text-blue-400">
+              Complete your profile and generate your customized fitness program
+              !
+            </p>
+          )}
         </div>
       </div>
     </BodyLayout>

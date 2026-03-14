@@ -38,13 +38,13 @@ const Header = () => {
   else if (pathname == "/grocery") title = "Grocery List";
 
   return (
-    <div className="w-full bg-white shadow px-7 py-5 flex items-center justify-between">
-      <h1 className="text-lg font-bold">{title}</h1>
-      <div className="flex items-center justify-center gap-3 text-gray-600">
-        <div className="rounded-full hover:bg-gray-200 p-2 cursor-pointer">
+    <div className="w-full bg-white shadow px-4 sm:px-6 lg:px-7 py-3 sm:py-4 lg:py-5 flex items-center justify-between gap-3">
+      <h1 className="text-base sm:text-lg font-bold truncate">{title}</h1>
+      <div className="flex items-center justify-center gap-2 sm:gap-3 text-gray-600">
+        <div className="rounded-full hover:bg-gray-200 p-1.5 sm:p-2 cursor-pointer">
           <Search className="scale-[.9]" />
         </div>
-        <div className="rounded-full hover:bg-gray-200 p-2 cursor-pointer">
+        <div className="rounded-full hover:bg-gray-200 p-1.5 sm:p-2 cursor-pointer">
           <Bell className="scale-[.9]" />
         </div>
         <DropdownMenu>

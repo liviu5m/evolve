@@ -55,8 +55,8 @@ const Dashboard = () => {
     <Loader />
   ) : (
     <BodyLayout>
-      <div className="p-10">
-        <div className="space-y-8">
+      <div className="p-4 md:p-10">
+        <div className="space-y-6 md:space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h2 className="text-2xl font-bold text-[#0F172A]">
@@ -64,7 +64,7 @@ const Dashboard = () => {
               </h2>
               <p className="text-gray-500">Ready to crush your goals today?</p>
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-3 md:gap-4">
               <Card className="px-4 py-2 flex items-center gap-3 bg-orange-50 border-orange-100">
                 <div className="p-2 bg-orange-100 rounded-full text-orange-600">
                   <Flame className="w-4 h-4" />
@@ -80,7 +80,7 @@ const Dashboard = () => {
           </div>
           {dailyWorkout ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <Card>
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-2 bg-green-100 rounded-lg text-green-600">

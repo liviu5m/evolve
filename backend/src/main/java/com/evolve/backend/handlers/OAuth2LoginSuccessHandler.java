@@ -6,6 +6,7 @@ import com.evolve.backend.services.JwtService;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +30,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final ObjectProvider<AuthenticationManager> authenticationManagerProvider;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    @Value("${spring.redirect.url}")
+    private String redirectUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -47,8 +50,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         ResponseCookie jwtCookie = createJwtCookie(jwtToken);
         response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, jwtCookie.toString());
         System.out.println(jwtToken);
-//        response.sendRedirect("http://localhost:5173/");
-        response.sendRedirect("https://evolveapp.vercel.app/");
+        response.sendRedirect(redirectUrl);
     }
 
     private User findOrCreateUser(OAuth2User oauth2User) {

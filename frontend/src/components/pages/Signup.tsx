@@ -47,8 +47,8 @@ const Signup = () => {
     },
   });
   return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <div className="flex items-center justify-center flex-col gap-3">
+    <div className="min-h-screen w-full flex items-center justify-center px-4">
+      <div className="flex items-center justify-center flex-col gap-3 w-full max-w-md">
         <h2 className="w-12 h-12 rounded-lg font-bold text-2xl bg-[#FF6B6B] text-white flex items-center justify-center">
           E
         </h2>
@@ -61,7 +61,7 @@ const Signup = () => {
         </p>
 
         <form
-          className="bg-white rounded-xl shadow px-10 py-5 w-[400px] mt-8"
+          className="bg-white rounded-xl shadow px-6 sm:px-10 py-5 w-full mt-8"
           onSubmit={(e) => {
             e.preventDefault();
             signUp();

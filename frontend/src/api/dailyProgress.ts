@@ -6,21 +6,25 @@ const baseUrl = import.meta.env.VITE_API_URL;
 export async function updateProgressData(
   userId: number,
   date: Date,
-  data: ProgressData
+  data: ProgressData,
 ) {
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   const response = await axios.put(
     `${baseUrl}/api/progress`,
-    { ...data, userId, date: date.toISOString().split("T")[0] },
-    { withCredentials: true }
+    { ...data, userId, date: dateStr },
+    { withCredentials: true },
   );
   return response.data;
 }
 
 export async function getCurrentProgress(userId: number, date: Date) {
+  const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  console.log(date, dateStr);
+
   const response = await axios.get(`${baseUrl}/api/progress`, {
     params: {
       userId,
-      date: date.toISOString().split("T")[0],
+      date: dateStr,
     },
     withCredentials: true,
   });
@@ -61,7 +65,7 @@ export async function getWeightProgress(chartType: string, userId: number) {
 export async function setWeightProgress(
   weight: string,
   userId: number,
-  date: Date
+  date: Date,
 ) {
   const response = await axios.put(
     `${baseUrl}/api/progress/weight`,
@@ -72,8 +76,7 @@ export async function setWeightProgress(
     },
     {
       withCredentials: true,
-    }
+    },
   );
   return response.data;
 }
-

@@ -22,7 +22,7 @@ public class GrokService {
 
     private static final Logger logger = LoggerFactory.getLogger(GrokService.class);
     private final RestClient restClient;
-    private final String groqApiUrl = "https://api.groq.com/openai/v1/chat/completions";
+    private final String GROQ_BASE_URL = "https://api.groq.com/openai/v1";
 
     @Value("${groq.api.key}")
     private String apiKey;
@@ -87,7 +87,7 @@ public class GrokService {
 
         String prompt = String.format(
                 "Act as a professional nutritionist. Generate a full 7-day weekly meal plan (Monday to Sunday) in JSON format.\n" +
-                        "User Profile: %s, Age: %d, Height: $f, Weight: %f.\n\n" +
+                        "User Profile: %s, Age: %d, Height: %f, Weight: %f.\n\n" +
                         "Instructions:\n" +
                         "1. Provide exactly 4 meals per day: Breakfast, Lunch, Dinner, and a Snack.\n" +
                         "2. For each meal, include: name, calories, protein, carbs, fats, and mealType.\n" +
@@ -143,17 +143,19 @@ public class GrokService {
 
         String prompt = "Act as a specialized food data parser. Based on this meal plan:\n\n" +
                 mealContext.toString() +
-                "\n\nGenerate a consolidated shopping list in JSON format as a SINGLE FLAT ARRAY." +
-                "\n\nRequired JSON Structure:\n" +
+                "\n\n### TASK\n" +
+                "Generate a consolidated shopping list as a SINGLE FLAT JSON ARRAY.\n\n" +
+                "### STRICT JSON STRUCTURE\n" +
                 "[\n" +
-                "  { \"name\": \"Product Name\", \"category\": \"Produce/Meat/Dairy/Pantry\", \"quantity\": \"Amount\" }\n" +
-                "]" +
-                "\n\nCRITICAL RULES:\n" +
-                "1. RETURN ONLY A RAW JSON ARRAY. DO NOT wrap it in an object like { \"items\": [] }.\n" +
-                "2. DO NOT include markdown code blocks (```json) or any conversational text.\n" +
-                "3. Every object must have 'name', 'category', and 'quantity'.\n" +
-                "4. Combine duplicate items and sum their quantities.\n" +
-                "5. Ensure the response starts with '[' and ends with ']'.";
+                "  { \"name\": \"Item Name\", \"category\": \"ENUM_VALUE\", \"quantity\": \"Amount\" }\n" +
+                "]\n\n" +
+                "### CRITICAL RULES - DO NOT VIOLATE:\n" +
+                "1. NO WRAPPERS: Do NOT start with { \"items\": ... }. The first character of your response MUST be '['.\n" +
+                "2. CATEGORY ENUM: The 'category' field MUST be exactly one of: PRODUCE, MEAT, DAIRY, PANTRY.\n" +
+                "3. NO MARKDOWN: Do NOT use ```json blocks. Return ONLY the raw string.\n" +
+                "4. NO EXPLANATION: Do not include any text before or after the JSON.\n" +
+                "5. CONSOLIDATE: Sum quantities for identical items into one object.\n" +
+                "6. NO KEYS: Do not use product names as keys; every entry must be an object inside the array.";
 
         return getGrokResponse(prompt);
     }
@@ -210,13 +212,16 @@ public class GrokService {
 
             Map<String, Object> requestBody = Map.of(
                     "model", "llama-3.1-8b-instant",
-                    "messages", new Object[] { Map.of("role", "user", "content", prompt) }
+                    "messages", new Object[] { Map.of("role", "user", "content", prompt) },
+                    "response_format", Map.of("type", "json_object"),
+                    "max_tokens", 4000,
+                    "temperature", 0.3
             );
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
             Map response = restClient.post()
-                    .uri("/chat/completions")
+                    .uri(GROQ_BASE_URL + "/chat/completions")
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + apiKey)
                     .body(requestBody)
                     .retrieve()

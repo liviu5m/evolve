@@ -21,7 +21,7 @@ import '@fontsource/roboto/700.css';
 function App() {
   const queryClient = new QueryClient();
   return (
-    <div className="bg-[#F9FAFB]">
+    <div className="bg-[#F9FAFB] min-h-screen overflow-x-hidden">
       <QueryClientProvider client={queryClient}>
         <AppProvider>
           <BrowserRouter>

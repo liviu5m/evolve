@@ -17,13 +17,13 @@ export function WorkoutCard({
 
   return (
     <div
-      className={`border-l-4 bg-white rounded-xl shadow-sm border p-10 border-gray-100 overflow-hidden  ${
+      className={`border-l-4 bg-white rounded-xl shadow-sm border p-6 sm:p-8 lg:p-10 border-gray-100 overflow-hidden  ${
         currentProgress.workout
           ? "border-green-500 opacity-75"
           : "border-[#0F172A]"
       }`}
     >
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-xl font-bold text-[#0F172A]">

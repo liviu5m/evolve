@@ -19,4 +19,17 @@ public class ProgressDto {
     private Boolean snack;
     private Double weight;
 
+    @Override
+    public String toString() {
+        return "ProgressDto{" +
+                "userId=" + userId +
+                ", date=" + date +
+                ", workout=" + workout +
+                ", breakfast=" + breakfast +
+                ", lunch=" + lunch +
+                ", dinner=" + dinner +
+                ", snack=" + snack +
+                ", weight=" + weight +
+                '}';
+    }
 }

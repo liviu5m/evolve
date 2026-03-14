@@ -53,10 +53,10 @@ const Verify = () => {
   console.log(error);
 
   return (
-    <div className="flex items-center justify-center h-screen flex-col">
-      <div className="p-10 rounded-lg bg-white shadow z-20">
+    <div className="flex items-center justify-center min-h-screen flex-col px-4">
+      <div className="p-6 sm:p-10 rounded-lg bg-white shadow z-20 w-full max-w-md">
         <form
-          className="w-[400px]"
+          className="w-full"
           onSubmit={(e) => {
             e.preventDefault();
             verify();

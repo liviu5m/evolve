@@ -9,9 +9,9 @@ type LayoutProps = {
 
 const BodyLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex text-[#121212] bg-[#F9FAFB] min-h-screen">
+    <div className="flex flex-col md:flex-row text-[#121212] bg-[#F9FAFB] min-h-screen overflow-x-hidden">
       <Sidebar />
-      <div className="w-[300px] flex-shrink-0" aria-hidden="true"></div>
+      <div className="hidden md:block md:w-[300px] md:flex-shrink-0" aria-hidden="true"></div>
       <div className="w-full flex-1 min-w-0">
         <Header />
         <main className="flex-1 p-4 md:p-8 pb-24 md:pb-8 max-w-7xl mx-auto w-full">

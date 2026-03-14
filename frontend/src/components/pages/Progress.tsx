@@ -84,8 +84,8 @@ const Progress = () => {
     <Loader />
   ) : (
     <BodyLayout>
-      <div className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="space-y-6 md:space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           <Card className="flex items-center gap-4">
             <div className="p-3 bg-blue-100 rounded-full text-blue-600">
               <TrendingDown className="w-6 h-6" />

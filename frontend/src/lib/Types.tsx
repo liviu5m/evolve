@@ -85,6 +85,7 @@ export type ProgressData = {
   dinner?: boolean;
   snack?: boolean;
   weight?: number;
+  date: string;
 };
 
 export type WeightResponse = {

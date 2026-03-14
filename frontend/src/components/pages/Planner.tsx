@@ -31,7 +31,7 @@ const Planner = () => {
       regenerateMealFunction(
         mealKey,
         meals?.find((m: Meal) => m.day === dayName).id,
-        user?.id || -1
+        user?.id || -1,
       ),
     onSuccess: (data) => {
       console.log(data);
@@ -53,7 +53,7 @@ const Planner = () => {
   ) : (
     <BodyLayout>
       {dailyWorkout ? (
-        <div className="space-y-8">
+        <div className="space-y-6 md:space-y-8">
           <WeeklyCalendar
             selectedDate={selectedDate}
             onSelectDate={setSelectedDate}
@@ -65,8 +65,8 @@ const Planner = () => {
             workout={dailyWorkout}
             selectedDate={selectedDate}
           />
-          <div className="flex items-center justify-between">
-            <h1 className="mt-10 text-lg font-bold">Meals</h1>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <h1 className="mt-6 sm:mt-10 text-lg font-bold">Meals</h1>
             <h2 className="text-gray-400 text-sm">
               {consumedKcal}/{totalKcal} kcal
             </h2>

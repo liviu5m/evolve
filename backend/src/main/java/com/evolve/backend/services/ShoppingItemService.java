@@ -12,6 +12,7 @@ import com.evolve.backend.responses.WorkoutResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,7 +32,6 @@ public class ShoppingItemService {
         ShoppingItem shoppingItem = new ShoppingItem(res.name, res.quantity, ItemCategory.valueOf(res.category.toUpperCase()), user);
         return shoppingItemRepository.save(shoppingItem);
     }
-
     public void generateTheWeeklyShoppingList(String response,User user) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         response = "[" + response + "]";
@@ -53,6 +53,7 @@ public class ShoppingItemService {
         return shoppingItemRepository.save(shoppingItem);
     }
 
+    @Transactional
     public void deleteShoppingItemsByUserId(Long userId) {
         shoppingItemRepository.deleteByUserId(userId);
     }

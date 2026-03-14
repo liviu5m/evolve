@@ -56,7 +56,7 @@ const Profile = () => {
   const generatePlan = () => {
     if (!user?.goal || !user.height || !user.weight) {
       toast(
-        "Complete your profile data to be able to generate a custom fitness plan."
+        "Complete your profile data to be able to generate a custom fitness plan.",
       );
       navigate("/profile");
       return;
@@ -68,11 +68,11 @@ const Profile = () => {
     <Loader />
   ) : (
     <BodyLayout>
-      <div className="flex justify-center gap-30 mt-20">
+      <div className="flex flex-col md:flex-row md:justify-center gap-10 md:gap-30 mt-10 md:mt-20">
         <div className="flex items-center justify-center flex-col gap-5">
           <h1 className="text-2xl font-semibold">Manage Your Profile</h1>
           <form
-            className="mt-7 flex flex-col gap-5"
+            className="mt-7 flex flex-col gap-5 w-full max-w-md"
             onSubmit={(e) => {
               e.preventDefault();
               updateUser();
@@ -82,7 +82,7 @@ const Profile = () => {
               <User className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="text"
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-full"
                 placeholder="Full Name"
                 value={data.fullName}
                 onChange={(e) => setData({ ...data, fullName: e.target.value })}
@@ -92,7 +92,7 @@ const Profile = () => {
               <User className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="date"
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-full"
                 placeholder="Full Name"
                 value={data.birthDate}
                 onChange={(e) =>
@@ -104,7 +104,7 @@ const Profile = () => {
               <User className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="text"
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-full"
                 placeholder="Goal"
                 value={data.goal}
                 onChange={(e) => setData({ ...data, goal: e.target.value })}
@@ -114,7 +114,7 @@ const Profile = () => {
               <User className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="number"
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-full"
                 placeholder="Height(cm)"
                 step={0.01}
                 value={data.height}
@@ -125,7 +125,7 @@ const Profile = () => {
               <User className="absolute top-1/2 -translate-y-1/2 left-2" />
               <input
                 type="number"
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-[500px]"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none pl-10 w-full"
                 placeholder="Weight(kg)"
                 step={0.01}
                 value={data.weight}
@@ -134,7 +134,7 @@ const Profile = () => {
             </div>
             <div className="relative">
               <textarea
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none w-[500px] resize-none h-30"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none w-full resize-none h-30"
                 placeholder="Activity Level"
                 value={data.activityLevel}
                 onChange={(e) =>
@@ -144,7 +144,7 @@ const Profile = () => {
             </div>
             <div className="relative">
               <textarea
-                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none w-[500px] resize-none h-30"
+                className="px-5 py-3 shadow border border-gray-300 rounded-lg outline-none w-full resize-none h-30"
                 placeholder="Daily Restrictions"
                 value={data.dailyRestrictions}
                 onChange={(e) =>
@@ -152,7 +152,7 @@ const Profile = () => {
                 }
               ></textarea>
             </div>
-            <div className="gap-6 mb-4 flex items-center gap-5">
+            <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-5">
               <label className="flex items-center space-x-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -182,13 +182,13 @@ const Profile = () => {
 
           <ToastContainer />
         </div>
-        <div className="">
+        <div className="mt-10 md:mt-0 md:ml-10">
           <h1 className="text-center text-lg font-semibold mb-5">
             Your Current Split
           </h1>
           <ul>
-            {workouts.map((workout: Workout) => {
-              return <li>{workout.sessionLabel}</li>;
+            {workouts.map((workout: Workout, i: number) => {
+              return <li key={i}>{workout.sessionLabel}</li>;
             })}
           </ul>
           <button
@@ -200,8 +200,8 @@ const Profile = () => {
                 ? "Regenerating"
                 : "Regenerate"
               : isPending
-              ? "Generating"
-              : "Generate"}{" "}
+                ? "Generating"
+                : "Generate"}{" "}
             My Custom Plan{" "}
             {isPending && (
               <div className="w-5 h-5 border-4 border-t-blue-500 border-gray-300 rounded-full animate-spin"></div>

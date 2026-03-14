@@ -1,7 +1,7 @@
 import { Check, RefreshCw, Clock } from "lucide-react";
 import type { MealLog, ProgressData } from "@/lib/Types";
 import { Card } from "./Card";
-import { isSameDay } from "date-fns";
+import { isSameDay, isToday } from "date-fns";
 
 export function MealCard({
   meal,
@@ -16,14 +16,12 @@ export function MealCard({
   regenerateMeal?: (e: string) => void;
   selectedDate: Date;
 }) {
-  console.log(meal);
 
-  let today = new Date();
   const mealKey = meal.mealType.toLowerCase() as keyof ProgressData;
   return (
     <Card className={`transition-all ${0 ? "opacity-75 bg-gray-50" : ""}`}>
-      <div className="flex gap-4">
-        <div className="w-24 h-24 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="w-full sm:w-24 h-40 sm:h-24 rounded-lg bg-gray-200 flex-shrink-0 overflow-hidden">
           <img
             src={meal.imageUrl}
             alt={meal.name}
@@ -54,17 +52,17 @@ export function MealCard({
             {updateProgress && (
               <button
                 onClick={() => {
-                  if (isSameDay(today, selectedDate))
+                  if (isSameDay(currentProgress.date, selectedDate))
                     updateProgress({
                       ...currentProgress,
                       [mealKey]: !currentProgress[mealKey],
                     });
                 }}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors  ${
+                className={`w-8 aspect-square h-8 rounded-full flex items-center justify-center transition-colors  ${
                   currentProgress[mealKey]
                     ? "bg-green-500 text-white"
                     : "bg-gray-100 text-gray-400 hover:bg-gray-200"
-                } ${!isSameDay(today, selectedDate) && "opacity-50"}`}
+                } ${!isSameDay(currentProgress.date, selectedDate) && "opacity-50"}`}
               >
                 <Check className="w-5 h-5" />
               </button>

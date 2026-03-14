@@ -63,7 +63,7 @@ const Grocery = () => {
     <Loader />
   ) : (
     <BodyLayout>
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-10">
         <h1 className="text-xl font-bold">Weekly Shopping List</h1>
         {Object.keys(items ?? {}).length > 0 ? (
           <h4

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -33,6 +34,8 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDto input) {
+        Optional<User> userEmail = userRepository.findByEmail(input.getEmail());
+        if(userEmail.get() != null) throw new RuntimeException("Email already used");
         if(!input.getPassword().equals(input.getPasswordConfirmation())) throw new RuntimeException("Passwords do not match");
         User user = new User();
         user.setEmail(input.getEmail());
@@ -56,10 +59,6 @@ public class AuthenticationService {
         if ("google".equals(user.getProvider())) {
             throw new RuntimeException("This account uses Google Login only.");
         }
-
-        System.out.println("Login Attempt for: " + input.getEmail());
-        System.out.println(input.getPassword());
-        System.out.println("Password Match: " + passwordEncoder.matches(String.valueOf(input.getPassword()), user.getPassword()));
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

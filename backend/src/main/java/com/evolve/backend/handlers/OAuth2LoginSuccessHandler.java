@@ -27,7 +27,6 @@ import java.util.Optional;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final UserRepository userRepository;
-    private final ObjectProvider<AuthenticationManager> authenticationManagerProvider;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     @Value("${spring.redirect.url}")
@@ -41,16 +40,19 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 
         User user = findOrCreateUser(oauth2User);
-//        if(user.getProvider().equals("credentials")) response.sendRedirect("http://localhost:5173/");
-//        Authentication auth = authenticationManagerProvider.getObject()
-//                .authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), "google"));
+        System.out.println(user);
+        if(user.getProvider().equals("credentials")) {
+            response.sendRedirect(redirectUrl+"auth/login?error=provider_mismatch");
+            return;
+        }
 
         String jwtToken = jwtService.generateToken(user);
-
         ResponseCookie jwtCookie = createJwtCookie(jwtToken);
+
         response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, jwtCookie.toString());
-        System.out.println(jwtToken);
-        response.sendRedirect(redirectUrl);
+
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader("Location", redirectUrl);
     }
 
     private User findOrCreateUser(OAuth2User oauth2User) {

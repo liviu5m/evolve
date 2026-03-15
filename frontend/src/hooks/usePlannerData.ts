@@ -29,7 +29,7 @@ export const usePlannerData = (selectedDate: Date) => {
     placeholderData: keepPreviousData,
   });
 
-  // console.log(selectedDate.toString().slice(0, 20), "----" , currentProgress);
+  console.log(selectedDate.toString().slice(0, 20), "----" , currentProgress);
   
 
   const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" });

@@ -1,23 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Lock, Mail } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import type { LoginData } from "@/lib/Types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { loginUser } from "@/api/user";
 import type { AxiosError } from "axios";
+import { useAppContext } from "@/lib/AppProvider";
 
 const Login = () => {
   const [data, setData] = useState<LoginData>({
     email: "",
     password: "",
   });
+  const { user } = useAppContext();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { mutate: login } = useMutation({
     mutationKey: ["login-user"],
     mutationFn: () => loginUser(data),
     onSuccess: (data) => {
       console.log(data);
+      queryClient.invalidateQueries();
       navigate("/");
     },
     onError: (err: AxiosError) => {
@@ -28,7 +34,12 @@ const Login = () => {
           state: { fromSignup: true, userId: msg.split(" ")[3] },
         });
       }
-      console.log(err);
+      setData({ email: "", password: "" });
+      setErrorMessage(msg);
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
+      console.log(msg);
     },
   });
 
@@ -36,6 +47,26 @@ const Login = () => {
     window.location.href =
       import.meta.env.VITE_API_URL + "/oauth2/authorization/google";
   };
+
+  useEffect(() => {
+    const errorType = searchParams.get("error");
+
+    if (errorType) {
+      const messages: Record<string, string> = {
+        provider_mismatch:
+          "This account uses a different login method (e.g., Credentials).",
+        invalid_credentials: "Invalid email or password.",
+        default: "An error occurred during authentication.",
+      };
+
+      setErrorMessage(messages[errorType] || messages.default);
+      searchParams.delete("error");
+      setSearchParams(searchParams, { replace: true });
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000);
+    }
+  }, [searchParams, setSearchParams]);
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center px-4">
@@ -50,7 +81,11 @@ const Login = () => {
             create new account
           </Link>
         </p>
-
+        {errorMessage && (
+          <div className="bg-red-100 text-red-700 p-3 rounded">
+            {errorMessage}
+          </div>
+        )}
         <form
           className="bg-white rounded-xl shadow px-6 sm:px-10 py-5 w-full mt-8"
           onSubmit={(e) => {

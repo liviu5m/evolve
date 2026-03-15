@@ -66,19 +66,22 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie jwtCookie = new Cookie("jwt", "");
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0);
+        ResponseCookie jwtCookie = ResponseCookie.from("jwt", "")
+                .path("/")
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
 
-        response.addCookie(jwtCookie);
+        response.addHeader(org.springframework.http.HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
-        return ResponseEntity.ok("Log out");
+        return ResponseEntity.ok("Logged out successfully");
     }
 
     @GetMapping("/jwt")
     public ResponseEntity<?> verifyAuth(@CookieValue(value = "jwt", required = false) String token) {
+        System.out.println(token);
         if (token != null && jwtService.isTokenValid(token)) {
             String username = jwtService.extractUsername(token);
             User user = userService.findByEmail(username);

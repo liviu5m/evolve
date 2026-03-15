@@ -2,6 +2,8 @@
 
 **Evolve** is a comprehensive full-stack fitness and wellness tracking application designed to help users manage their health journey through workout planning, meal tracking, progress monitoring, and grocery management. Built with modern technologies and best practices, Evolve provides an intuitive interface for users to achieve their fitness goals.
 
+evolveapp.vercel.app
+
 ---
 
 ## 📋 Table of Contents
